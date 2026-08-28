@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mariavai_services/core/firebase/auth_service.dart';
+import 'package:mariavai_services/core/firebase/firestore_service.dart';
+import 'package:mariavai_services/domain/entities/user.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,8 +16,11 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authService = AuthService();
+  final _firestoreService = FirestoreService();
+  
   bool _isLoading = false;
-  String _selectedRole = 'client';
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -23,27 +29,51 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _handleLogin() {
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
 
-      // Simulate login - in real app, this would call an API
-      Future.delayed(const Duration(seconds: 1), () {
-        setState(() => _isLoading = false);
+      try {
+        // Login com Firebase
+        final user = await _authService.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+
+        // Obter dados completos do usuário do Firestore
+        final userDoc = await _firestoreService.getUserById(user.id);
+        
+        if (userDoc == null) {
+          setState(() {
+            _errorMessage = 'Usuário não encontrado no sistema';
+            _isLoading = false;
+          });
+          return;
+        }
 
         // Navigate based on role
-        switch (_selectedRole) {
-          case 'client':
-            context.go('/client');
-            break;
-          case 'provider':
-            context.go('/provider');
-            break;
-          case 'admin':
-            context.go('/admin');
-            break;
+        if (mounted) {
+          switch (userDoc.role) {
+            case UserRole.client:
+              context.go('/client');
+              break;
+            case UserRole.provider:
+              context.go('/provider');
+              break;
+            case UserRole.admin:
+              context.go('/admin');
+              break;
+          }
         }
-      });
+      } catch (e) {
+        setState(() {
+          _errorMessage = 'Erro ao fazer login: ${e.toString()}';
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -123,31 +153,15 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _selectedRole,
-                    decoration: const InputDecoration(
-                      labelText: 'Tipo de Usuário',
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'client',
-                        child: Text('Cliente'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'provider',
-                        child: Text('Prestador'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'admin',
-                        child: Text('Administrador'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      setState(() => _selectedRole = value!);
-                    },
-                  ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: _isLoading ? null : _handleLogin,

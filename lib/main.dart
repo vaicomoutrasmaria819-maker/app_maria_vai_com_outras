@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'core/router/app_router.dart';
+import 'core/firebase/firebase_service.dart';
+import 'core/firebase/messaging_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicializar Firebase
+  await FirebaseService.initialize();
+  
+  // Inicializar notificações
+  await MessagingService().initialize();
+  
   runApp(const MariaVaiApp());
 }
 

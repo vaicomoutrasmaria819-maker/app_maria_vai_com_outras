@@ -1,29 +1,29 @@
-import 'package:mariavai_services/domain/entities/payment.dart' as payment;
+import 'package:mariavai_services/domain/entities/payment.dart';
 import 'package:mariavai_services/domain/entities/service.dart';
 
 class PaymentService {
   // Mock payment service - in production, integrate with Mercado Pago
-  static Future<payment.Payment> createPayment({
+  static Future<Payment> createPayment({
     required Service service,
-    required payment.PaymentMethod method,
+    required PaymentMethod method,
   }) async {
     // Simulate payment processing
     await Future.delayed(const Duration(seconds: 2));
 
     final commissionAmount = service.commissionAmount;
 
-    return payment.Payment(
+    return Payment(
       id: 'pay_${DateTime.now().millisecondsSinceEpoch}',
       serviceId: service.id,
       amount: service.price,
       commissionAmount: commissionAmount,
-      status: payment.PaymentStatus.completed,
+      status: PaymentStatus.completed,
       method: method,
       createdAt: DateTime.now(),
       processedAt: DateTime.now(),
       transactionId: 'txn_${DateTime.now().millisecondsSinceEpoch}',
-      qrCodePix: method == payment.PaymentMethod.pix ? '00020126580014br.gov.bcb.pix0136' : null,
-      boletoUrl: method == payment.PaymentMethod.boleto ? 'https://mercadopago.com/boleto/12345' : null,
+      qrCodePix: method == PaymentMethod.pix ? '00020126580014br.gov.bcb.pix0136' : null,
+      boletoUrl: method == PaymentMethod.boleto ? 'https://mercadopago.com/boleto/12345' : null,
     );
   }
 

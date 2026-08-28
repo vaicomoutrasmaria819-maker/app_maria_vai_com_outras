@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mariavai_services/core/firebase/firestore_service.dart';
+import 'package:mariavai_services/domain/entities/payment.dart';
+import 'package:mariavai_services/domain/entities/panic_alert.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -217,6 +220,8 @@ class AdminPaymentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firestoreService = FirestoreService();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -230,124 +235,146 @@ class AdminPaymentsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Card(
-            color: Colors.green[50],
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          StreamBuilder<List<Payment>>(
+            stream: firestoreService.getAllPayments(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Erro: ${snapshot.error}'));
+              }
+
+              final payments = snapshot.data ?? [];
+              
+              // Calcular totais
+              double totalProcessed = 0;
+              double totalCommission = 0;
+              double totalPending = 0;
+
+              for (final payment in payments) {
+                if (payment.status == PaymentStatus.completed) {
+                  totalProcessed += payment.amount;
+                  totalCommission += payment.commissionAmount;
+                } else if (payment.status == PaymentStatus.pending) {
+                  totalPending += payment.amount;
+                }
+              }
+
+              return Column(
                 children: [
-                  const Text(
-                    'Resumo Financeiro',
-                    style: TextStyle(
-                      fontSize: 18,
+                  Card(
+                    color: Colors.green[50],
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Resumo Financeiro',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _PaymentSummaryRow(
+                            label: 'Total Processado',
+                            value: 'R\$ ${totalProcessed.toStringAsFixed(2)}',
+                            color: Colors.green,
+                          ),
+                          _PaymentSummaryRow(
+                            label: 'Comissões (20%)',
+                            value: 'R\$ ${totalCommission.toStringAsFixed(2)}',
+                            color: Colors.orange,
+                          ),
+                          _PaymentSummaryRow(
+                            label: 'Valor Líquido Prestadores',
+                            value: 'R\$ ${(totalProcessed - totalCommission).toStringAsFixed(2)}',
+                            color: Colors.blue,
+                          ),
+                          const Divider(height: 32),
+                          _PaymentSummaryRow(
+                            label: 'Pagamentos Pendentes',
+                            value: 'R\$ ${totalPending.toStringAsFixed(2)}',
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Histórico de Pagamentos',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  _PaymentSummaryRow(
-                    label: 'Total Processado',
-                    value: 'R\$ 45.678,00',
-                    color: Colors.green,
-                  ),
-                  _PaymentSummaryRow(
-                    label: 'Comissões (20%)',
-                    value: 'R\$ 9.135,60',
-                    color: Colors.orange,
-                  ),
-                  _PaymentSummaryRow(
-                    label: 'Valor Líquido Prestadores',
-                    value: 'R\$ 36.542,40',
-                    color: Colors.blue,
-                  ),
-                  const Divider(height: 32),
-                  _PaymentSummaryRow(
-                    label: 'Pagamentos Pendentes',
-                    value: 'R\$ 2.340,00',
-                    color: Colors.red,
+                  Card(
+                    child: payments.isEmpty
+                        ? const Padding(
+                            padding: EdgeInsets.all(32.0),
+                            child: Text('Nenhum pagamento encontrado'),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: payments.length,
+                            itemBuilder: (context, index) {
+                              final payment = payments[index];
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: payment.status == PaymentStatus.completed
+                                      ? Colors.green
+                                      : Colors.orange,
+                                  child: Icon(
+                                    payment.status == PaymentStatus.completed
+                                        ? Icons.check
+                                        : Icons.pending,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                title: Text('Pagamento #${payment.id.substring(0, 8)}'),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Serviço ID: ${payment.serviceId}'),
+                                    Text('Data: ${payment.createdAt.toLocal().toString().split('.')[0]}'),
+                                  ],
+                                ),
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'R\$ ${payment.amount.toStringAsFixed(2)}',
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Comissão: R\$ ${payment.commissionAmount.toStringAsFixed(2)}',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                   ),
                 ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Histórico de Pagamentos',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                final payment = _getPaymentData(index);
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: payment['status'] == 'completed'
-                        ? Colors.green
-                        : Colors.orange,
-                    child: Icon(
-                      payment['status'] == 'completed'
-                          ? Icons.check
-                          : Icons.pending,
-                      color: Colors.white,
-                    ),
-                  ),
-                  title: Text('Pagamento #${1000 + index}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Serviço: ${payment['service']}'),
-                      Text('Prestador: ${payment['provider']}'),
-                      Text('Data: ${payment['date']}'),
-                    ],
-                  ),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        payment['amount'] ?? 'R\$ 0,00',
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Comissão: ${payment['commission'] ?? 'R\$ 0,00'}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+              );
+            },
           ),
         ],
       ),
     );
-  }
-
-  Map<String, String> _getPaymentData(int index) {
-    final services = ['Limpeza', 'Cuidados', 'Alimentação', 'Beleza', 'Saúde'];
-    final providers = ['Ana Costa', 'Maria Santos', 'Joana Silva', 'Carla Oliveira'];
-    final dates = ['28/08/2026', '27/08/2026', '26/08/2026', '25/08/2026'];
-    
-    return {
-      'service': services[index % services.length],
-      'provider': providers[index % providers.length],
-      'date': dates[index % dates.length],
-      'amount': 'R\$ ${(150 + index * 10).toStringAsFixed(2)}',
-      'commission': 'R\$ ${((150 + index * 10) * 0.2).toStringAsFixed(2)}',
-      'status': index < 7 ? 'completed' : 'pending',
-    };
   }
 }
 
@@ -468,6 +495,8 @@ class AdminPanicAlertsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firestoreService = FirestoreService();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -481,116 +510,167 @@ class AdminPanicAlertsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Card(
-            color: Colors.red[50],
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
+          StreamBuilder<List<PanicAlert>>(
+            stream: firestoreService.getPanicAlerts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Erro: ${snapshot.error}'));
+              }
+
+              final alerts = snapshot.data ?? [];
+              final activeAlerts = alerts.where((alert) => 
+                alert.status == PanicStatus.triggered || 
+                alert.status == PanicStatus.acknowledged
+              ).toList();
+
+              return Column(
                 children: [
-                  const Icon(Icons.warning, color: Colors.red, size: 32),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Alertas Ativos',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                  Card(
+                    color: Colors.red[50],
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.warning, color: Colors.red, size: 32),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Alertas Ativos',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text('${activeAlerts.length} alertas precisam de atenção'),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text('2 alertas precisam de atenção'),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      '2',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${activeAlerts.length}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Histórico de Alertas',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                final alert = _getAlertData(index);
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: alert['statusColor'],
-                    child: Icon(
-                      alert['statusIcon'],
-                      color: Colors.white,
+                  const SizedBox(height: 24),
+                  Text(
+                    'Histórico de Alertas',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  title: Text('Alerta #${1000 + index}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Usuário: ${alert['user']}'),
-                      Text('Localização: ${alert['location']}'),
-                      Text('Horário: ${alert['time']}'),
-                    ],
+                  const SizedBox(height: 16),
+                  Card(
+                    child: alerts.isEmpty
+                        ? const Padding(
+                            padding: EdgeInsets.all(32.0),
+                            child: Text('Nenhum alerta encontrado'),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: alerts.length,
+                            itemBuilder: (context, index) {
+                              final alert = alerts[index];
+                              final statusColor = _getStatusColor(alert.status);
+                              final statusIcon = _getStatusIcon(alert.status);
+                              final statusText = _getStatusText(alert.status);
+
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: statusColor,
+                                  child: Icon(
+                                    statusIcon,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                title: Text('Alerta #${alert.id.substring(0, 8)}'),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Usuário ID: ${alert.userId}'),
+                                    if (alert.address != null) 
+                                      Text('Localização: ${alert.address}'),
+                                    if (alert.latitude != null && alert.longitude != null)
+                                      Text('GPS: ${alert.latitude!.toStringAsFixed(6)}, ${alert.longitude!.toStringAsFixed(6)}'),
+                                    Text('Horário: ${alert.triggeredAt.toLocal().toString().split('.')[0]}'),
+                                  ],
+                                ),
+                                trailing: Chip(
+                                  label: Text(statusText),
+                                  backgroundColor: statusColor,
+                                  labelStyle: const TextStyle(color: Colors.white),
+                                ),
+                              );
+                            },
+                          ),
                   ),
-                  trailing: Chip(
-                    label: Text(alert['status']),
-                    backgroundColor: alert['statusColor'],
-                    labelStyle: const TextStyle(color: Colors.white),
-                  ),
-                );
-              },
-            ),
+                ],
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  Map<String, dynamic> _getAlertData(int index) {
-    final users = ['Maria Silva', 'Ana Costa', 'Joana Santos', 'Carla Oliveira'];
-    final locations = [
-      'Rua das Flores, 123',
-      'Av. Brasil, 456',
-      'Praça Central, 789',
-      'Rua do Sol, 321'
-    ];
-    final times = ['14:30', '12:15', '10:45', '09:20'];
-    
-    final statuses = ['Resolvido', 'Resolvido', 'Ativo', 'Ativo', 'Resolvido'];
-    final status = statuses[index % statuses.length];
-    
-    return {
-      'user': users[index % users.length],
-      'location': locations[index % locations.length],
-      'time': times[index % times.length],
-      'status': status,
-      'statusColor': status == 'Ativo' ? Colors.red : Colors.green,
-      'statusIcon': status == 'Ativo' ? Icons.warning : Icons.check,
-    };
+  Color _getStatusColor(PanicStatus status) {
+    switch (status) {
+      case PanicStatus.triggered:
+        return Colors.red;
+      case PanicStatus.acknowledged:
+        return Colors.orange;
+      case PanicStatus.resolved:
+        return Colors.green;
+      case PanicStatus.falseAlarm:
+        return Colors.grey;
+    }
+  }
+
+  IconData _getStatusIcon(PanicStatus status) {
+    switch (status) {
+      case PanicStatus.triggered:
+        return Icons.warning;
+      case PanicStatus.acknowledged:
+        return Icons.access_time;
+      case PanicStatus.resolved:
+        return Icons.check;
+      case PanicStatus.falseAlarm:
+        return Icons.close;
+    }
+  }
+
+  String _getStatusText(PanicStatus status) {
+    switch (status) {
+      case PanicStatus.triggered:
+        return 'Acionado';
+      case PanicStatus.acknowledged:
+        return 'Reconhecido';
+      case PanicStatus.resolved:
+        return 'Resolvido';
+      case PanicStatus.falseAlarm:
+        return 'Falso Alarme';
+    }
   }
 }

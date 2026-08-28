@@ -73,6 +73,12 @@ lib/
 - **Material Design 3** - Design system moderno
 - **Google Fonts** - Tipografia (Poppins)
 
+### **Firebase Backend**
+- **Firebase Authentication** - Autenticação de usuários
+- **Cloud Firestore** - Banco de dados NoSQL em tempo real
+- **Firebase Storage** - Armazenamento de imagens
+- **Cloud Messaging** - Notificações push
+
 ### **Navegação**
 - **Go Router** - Roteamento declarativo
 
@@ -83,8 +89,7 @@ lib/
 - **Permission Handler** - Gerenciamento de permissões
 
 ### **Armazenamento e Rede**
-- **Sembast** - Banco de dados local
-- **Flutter Secure Storage** - Armazenamento seguro
+- **Flutter Secure Storage** - Armazenamento seguro local
 - **Dio** - Cliente HTTP
 - **Connectivity Plus** - Detecção de conectividade
 
@@ -114,7 +119,13 @@ cd mariavai_services
 flutter pub get
 ```
 
-3. **Execute o app**
+3. **Configure o Firebase**
+- Siga o guia em [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
+- Crie um projeto no Firebase Console
+- Adicione as configurações do Firebase ao projeto
+- Configure Authentication, Firestore, Storage e Cloud Messaging
+
+4. **Execute o app**
 ```bash
 flutter run -d chrome
 ```
