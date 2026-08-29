@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Maria Vai',
+                    'Maria Vai Com As Outras',
                     style: GoogleFonts.poppins(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,

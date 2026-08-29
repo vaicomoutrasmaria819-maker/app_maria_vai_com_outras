@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:mariavai_services/domain/entities/user.dart' as domain;
 import 'package:mariavai_services/domain/entities/service.dart' as domain;
 import 'package:mariavai_services/domain/entities/payment.dart' as domain;
@@ -8,8 +9,10 @@ class FirestoreService {
   // O banco Firestore deste projeto foi criado com o ID 'mariavaidb' (não
   // '(default)'), então FirebaseFirestore.instance (que assume o banco
   // default) não funcionaria aqui — precisa apontar explicitamente.
-  final FirebaseFirestore _firestore =
-      FirebaseFirestore.instanceFor(databaseId: 'mariavaidb');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
+    app: Firebase.app(),
+    databaseId: 'mariavaidb',
+  );
 
   // Coleções
   static const String usersCollection = 'users';

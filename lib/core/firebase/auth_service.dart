@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:mariavai_services/domain/entities/user.dart' as domain;
 
 /// Autenticação própria com bcrypt.
@@ -18,8 +19,10 @@ import 'package:mariavai_services/domain/entities/user.dart' as domain;
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   // Mesmo banco não-default usado em firestore_service.dart.
-  final FirebaseFirestore _firestore =
-      FirebaseFirestore.instanceFor(databaseId: 'mariavaidb');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
+    app: Firebase.app(),
+    databaseId: 'mariavaidb',
+  );
 
   // Ajuste a região se você fez o deploy das functions em outra (o
   // firebase.json/functions/index.js deste projeto usa
