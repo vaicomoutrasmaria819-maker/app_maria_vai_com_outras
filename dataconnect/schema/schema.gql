@@ -1,0 +1,36 @@
+type User @table {
+  email: String!
+  role: Role!
+  displayName: String
+  lastLoginAt: Timestamp
+}
+
+type Role @table {
+  roleName: String!
+  permissionLevel: Int!
+  description: String
+}
+
+type TestProfile @table {
+  environment: String!
+  status: String!
+  expirationDate: Date
+  linkedDeveloperEmail: String
+  createdBy: User!
+}
+
+type ServiceUser @table {
+  serviceName: String!
+  apiKeyHash: String!
+  scope: String
+  lastUsedAt: Timestamp
+  provisionedBy: User!
+}
+
+type AuditLog @table {
+  actionType: String!
+  timestamp: Timestamp!
+  metadata: String
+  actorUser: User
+  actorService: ServiceUser
+}

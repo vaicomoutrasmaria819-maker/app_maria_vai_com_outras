@@ -1,0 +1,24 @@
+mutation CreateSeedData @transaction {
+  role_insertMany(data: [
+    { roleName: "Admin", permissionLevel: 10, description: "System Administrator" },
+    { roleName: "Developer", permissionLevel: 5, description: "Application Developer" },
+    { roleName: "Guest", permissionLevel: 1, description: "Read-only access" }
+  ])
+  user_insertMany(data: [
+    { email: "admin@example.com", displayName: "Admin User", role: { id: "00000000-0000-0000-0000-000000000000" } },
+    { email: "dev1@example.com", displayName: "Dev One", role: { id: "00000000-0000-0000-0000-000000000001" } },
+    { email: "dev2@example.com", displayName: "Dev Two", role: { id: "00000000-0000-0000-0000-000000000001" } }
+  ])
+  serviceUser_insertMany(data: [
+    { serviceName: "CI-Pipeline", apiKeyHash: "hash1", provisionedBy: { id: "00000000-0000-0000-0000-000000000000" } },
+    { serviceName: "Monitoring", apiKeyHash: "hash2", provisionedBy: { id: "00000000-0000-0000-0000-000000000000" } }
+  ])
+  testProfile_insertMany(data: [
+    { environment: "Staging", status: "Active", createdBy: { id: "00000000-0000-0000-0000-000000000001" } },
+    { environment: "Production", status: "Locked", createdBy: { id: "00000000-0000-0000-0000-000000000002" } }
+  ])
+  auditLog_insertMany(data: [
+    { actionType: "LOGIN", timestamp: "2023-10-01T10:00:00Z", actorUserId: "00000000-0000-0000-0000-000000000000" },
+    { actionType: "UPDATE_CONFIG", timestamp: "2023-10-01T11:00:00Z", actorServiceId: "00000000-0000-0000-0000-000000000000" }
+  ])
+}

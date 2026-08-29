@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "998255141329",
+    "firebase_url": "https://mariavaicomoutras-e7c28-default-rtdb.firebaseio.com",
+    "project_id": "mariavaicomoutras-e7c28",
+    "storage_bucket": "mariavaicomoutras-e7c28.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998255141329:android:cf7a9a05830e94c52bc0f0",
+        "android_client_info": {
+          "package_name": "com.mariavai.mariavai_services"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFD-dvwvg6XEwT5ZI3vVpMsQHYZ6RsQzo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

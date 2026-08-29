@@ -184,6 +184,36 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: const Text('Esqueceu a senha?'),
                   ),
+                  const SizedBox(height: 8),
+                  const Divider(),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Ainda não tem conta?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey[700]),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () => context.push('/register/client'),
+                    icon: const Icon(Icons.person_add_alt_1_rounded),
+                    label: const Text('Cadastrar como cliente'),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () => context.push('/register/provider'),
+                    icon: const Icon(Icons.home_repair_service_rounded),
+                    label: const Text('Cadastrar como prestadora'),
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: TextButton(
+                      onPressed: () => context.push('/register/admin'),
+                      child: Text(
+                        'Acesso administrativo',
+                        style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

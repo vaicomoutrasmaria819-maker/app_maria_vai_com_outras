@@ -41,29 +41,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDummyKeyForDevelopment',
-    appId: '1:123456789:web:abcdef',
-    messagingSenderId: '123456789',
+    apiKey: 'AIzaSyAwMkkGeYdJb-TvozXHMIJz8XReoxuKHq4',
+    appId: '1:998255141329:web:5cb6c9f3c7c09d142bc0f0',
+    messagingSenderId: '998255141329',
     projectId: 'mariavaicomoutras-e7c28',
     authDomain: 'mariavaicomoutras-e7c28.firebaseapp.com',
-    storageBucket: 'mariavaicomoutras-e7c28.appspot.com',
+    storageBucket: 'mariavaicomoutras-e7c28.firebasestorage.app',
+    measurementId: 'G-22GV633E3D',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDummyKeyForDevelopment',
-    appId: '1:123456789:android:abcdef',
-    messagingSenderId: '123456789',
+    apiKey: 'AIzaSyBFD-dvwvg6XEwT5ZI3vVpMsQHYZ6RsQzo',
+    appId: '1:998255141329:android:cf7a9a05830e94c52bc0f0',
+    messagingSenderId: '998255141329',
     projectId: 'mariavaicomoutras-e7c28',
-    storageBucket: 'mariavaicomoutras-e7c28.appspot.com',
+    storageBucket: 'mariavaicomoutras-e7c28.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDummyKeyForDevelopment',
-    appId: '1:123456789:ios:abcdef',
-    messagingSenderId: '123456789',
+    apiKey: 'AIzaSyBsKAI4hg4t_wIS8irHe0hj6udBwm7XKoU',
+    appId: '1:998255141329:ios:59c1f2bc5590274a2bc0f0',
+    messagingSenderId: '998255141329',
     projectId: 'mariavaicomoutras-e7c28',
-    storageBucket: 'mariavaicomoutras-e7c28.appspot.com',
-    iosBundleId: 'com.mariavai.mariavaiServices',
+    storageBucket: 'mariavaicomoutras-e7c28.firebasestorage.app',
+    iosBundleId: 'com.mariavai.mariavaiservices',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

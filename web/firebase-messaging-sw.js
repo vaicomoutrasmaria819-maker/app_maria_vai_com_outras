@@ -11,12 +11,12 @@ importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: 'AIzaSyDummyKeyForDevelopment',
-  appId: '1:123456789:web:abcdef',
-  messagingSenderId: '123456789',
+  apiKey: 'AIzaSyAwMkkGeYdJb-TvozXHMIJz8XReoxuKHq4',
+  appId: '1:998255141329:web:5cb6c9f3c7c09d142bc0f0',
+  messagingSenderId: '998255141329',
   projectId: 'mariavaicomoutras-e7c28',
   authDomain: 'mariavaicomoutras-e7c28.firebaseapp.com',
-  storageBucket: 'mariavaicomoutras-e7c28.appspot.com',
+  storageBucket: 'mariavaicomoutras-e7c28.firebasestorage.app',
 });
 
 const messaging = firebase.messaging();

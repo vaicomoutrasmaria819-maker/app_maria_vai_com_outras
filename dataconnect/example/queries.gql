@@ -1,0 +1,127 @@
+mutation CreateUser($email: String!, $displayName: String) @auth(level: USER) {
+  user_insert(data: {id_expr: "auth.uid", email: $email, displayName: $displayName, roleId: "00000000-0000-0000-0000-000000000000"})
+}
+
+mutation UpdateMyProfile($displayName: String) @auth(level: USER) {
+  user_update(key: {id_expr: "auth.uid"}, data: {displayName: $displayName})
+}
+
+mutation DeleteUser @auth(level: USER) {
+  user_delete(key: {id_expr: "auth.uid"})
+}
+
+query GetMyUser @auth(level: USER) {
+  user(key: {id_expr: "auth.uid"}) {
+    email
+    displayName
+  }
+}
+
+query ListUsers @auth(level: PUBLIC, insecureReason: "Publicly visible user directory") {
+  users {
+    displayName
+    email
+  }
+}
+
+mutation CreateRole($roleName: String!, $permissionLevel: Int!) @auth(level: USER) {
+  role_insert(data: {roleName: $roleName, permissionLevel: $permissionLevel})
+}
+
+mutation UpdateRole($id: UUID!, $permissionLevel: Int!) @auth(level: USER) {
+  role_update(key: {id: $id}, data: {permissionLevel: $permissionLevel})
+}
+
+mutation DeleteRole($id: UUID!) @auth(level: USER) {
+  role_delete(key: {id: $id})
+}
+
+query GetRole($id: UUID!) @auth(level: USER) {
+  role(id: $id) {
+    roleName
+    permissionLevel
+  }
+}
+
+query ListRoles @auth(level: USER) {
+  roles {
+    roleName
+  }
+}
+
+mutation CreateTestProfile($environment: String!, $status: String!) @auth(level: USER) {
+  testProfile_insert(data: {environment: $environment, status: $status, createdById_expr: "auth.uid"})
+}
+
+mutation UpdateTestProfile($id: UUID!, $status: String!) @auth(level: USER) {
+  testProfile_update(key: {id: $id}, data: {status: $status})
+}
+
+mutation DeleteTestProfile($id: UUID!) @auth(level: USER) {
+  testProfile_delete(key: {id: $id})
+}
+
+query GetTestProfile($id: UUID!) @auth(level: USER) {
+  testProfile(id: $id) {
+    environment
+    status
+  }
+}
+
+query ListMyTestProfiles @auth(level: USER) {
+  testProfiles(where: {createdById: {eq_expr: "auth.uid"}}) {
+    environment
+    status
+  }
+}
+
+mutation CreateServiceUser($serviceName: String!, $apiKeyHash: String!) @auth(level: USER) {
+  serviceUser_insert(data: {serviceName: $serviceName, apiKeyHash: $apiKeyHash, provisionedById_expr: "auth.uid"})
+}
+
+mutation UpdateServiceUser($id: UUID!, $scope: String!) @auth(level: USER) {
+  serviceUser_update(key: {id: $id}, data: {scope: $scope})
+}
+
+mutation DeleteServiceUser($id: UUID!) @auth(level: USER) {
+  serviceUser_delete(key: {id: $id})
+}
+
+query GetServiceUser($id: UUID!) @auth(level: USER) {
+  serviceUser(id: $id) {
+    serviceName
+    scope
+  }
+}
+
+query ListMyServiceUsers @auth(level: USER) {
+  serviceUsers(where: {provisionedById: {eq_expr: "auth.uid"}}) {
+    serviceName
+  }
+}
+
+mutation LogAction($actionType: String!) @auth(level: USER) {
+  auditLog_insert(data: {actionType: $actionType, timestamp_time: {now: true}, actorUserId_expr: "auth.uid"})
+}
+
+mutation UpdateAuditLog($id: UUID!, $metadata: String!) @auth(level: USER) {
+  auditLog_update(key: {id: $id}, data: {metadata: $metadata})
+}
+
+mutation DeleteAuditLog($id: UUID!) @auth(level: USER) {
+  auditLog_delete(key: {id: $id})
+}
+
+query GetAuditLog($id: UUID!) @auth(level: USER) {
+  auditLog(id: $id) {
+    actionType
+    timestamp
+  }
+}
+
+query ListAuditLogs @auth(level: USER) {
+  auditLogs(orderBy: [{timestamp: DESC}]) {
+    actionType
+    actorUser { displayName }
+  }
+}
