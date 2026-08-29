@@ -26,6 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _accessCodeController = TextEditingController();
+  domain.Gender? _selectedGender;
 
   final _authService = AuthService();
   final _firestoreService = FirestoreService();
@@ -98,6 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
         name: _nameController.text.trim(),
         phone: _phoneController.text.trim(),
         role: widget.role,
+        gender: _selectedGender,
       );
 
       // Salva o documento completo do usuário no Firestore, incluindo o
@@ -196,6 +198,61 @@ class _RegisterPageState extends State<RegisterPage> {
                         ? 'Informe seu telefone'
                         : null,
                   ),
+                  const SizedBox(height: 16),
+                  if (widget.role == domain.UserRole.provider) ...[
+                    DropdownButtonFormField<domain.Gender>(
+                      value: _selectedGender,
+                      decoration: const InputDecoration(
+                        labelText: 'Gênero',
+                        prefixIcon: Icon(Icons.wc),
+                        border: OutlineInputBorder(),
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: domain.Gender.female,
+                          child: Text('Feminino'),
+                        ),
+                        DropdownMenuItem(
+                          value: domain.Gender.male,
+                          child: Text('Masculino'),
+                        ),
+                        DropdownMenuItem(
+                          value: domain.Gender.other,
+                          child: Text('Outro'),
+                        ),
+                        DropdownMenuItem(
+                          value: domain.Gender.preferNotToSay,
+                          child: Text('Prefiro não dizer'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() => _selectedGender = value);
+                      },
+                      validator: (value) => (value == null)
+                          ? 'Selecione seu gênero'
+                          : null,
+                    ),
+                    const SizedBox(height: 8),
+                    Card(
+                      color: Colors.pink[50],
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.info_outline, color: Colors.pink, size: 20),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Clientes podem filtrar por profissionais femininas',
+                                style: GoogleFonts.poppins(fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _passwordController,

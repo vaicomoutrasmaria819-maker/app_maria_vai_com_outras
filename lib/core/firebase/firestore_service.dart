@@ -22,6 +22,7 @@ class FirestoreService {
       'email': user.email,
       'phone': user.phone,
       'role': user.role.name,
+      'gender': user.gender?.name,
       'photoUrl': user.photoUrl,
       'createdAt': FieldValue.serverTimestamp(),
       'isActive': user.isActive,
@@ -216,6 +217,7 @@ class FirestoreService {
       email: data['email'] ?? '',
       phone: data['phone'] ?? '',
       role: _parseUserRole(data['role']),
+      gender: _parseGender(data['gender']),
       photoUrl: data['photoUrl'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       isActive: data['isActive'] ?? true,
@@ -299,13 +301,24 @@ class FirestoreService {
     }
   }
 
+  domain.Gender _parseGender(String? gender) {
+    switch (gender) {
+      case 'female': return domain.Gender.female;
+      case 'male': return domain.Gender.male;
+      case 'other': return domain.Gender.other;
+      case 'preferNotToSay': return domain.Gender.preferNotToSay;
+      default: return null;
+    }
+  }
+
   domain.ServiceStatus _parseServiceStatus(String? status) {
     switch (status) {
+      case 'quotation': return domain.ServiceStatus.quotation;
       case 'pending': return domain.ServiceStatus.pending;
       case 'inProgress': return domain.ServiceStatus.inProgress;
       case 'completed': return domain.ServiceStatus.completed;
       case 'cancelled': return domain.ServiceStatus.cancelled;
-      default: return domain.ServiceStatus.pending;
+      default: return domain.ServiceStatus.quotation;
     }
   }
 

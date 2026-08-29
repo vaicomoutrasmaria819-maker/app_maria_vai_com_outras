@@ -30,6 +30,7 @@ class AuthService {
     required String name,
     required String phone,
     required domain.UserRole role,
+    domain.Gender? gender,
   }) async {
     final UserCredential credential = await _auth.createUserWithEmailAndPassword(
       email: email,
@@ -42,7 +43,7 @@ class AuthService {
     // Criar documento do usuário no Firestore
     // Isso será feito no UserService
 
-    return _mapFirebaseUserToDomainUser(credential.user!, name: name, phone: phone, role: role);
+    return _mapFirebaseUserToDomainUser(credential.user!, name: name, phone: phone, role: role, gender: gender);
   }
 
   // Logout
@@ -61,6 +62,7 @@ class AuthService {
     String? name,
     String? phone,
     domain.UserRole? role,
+    domain.Gender? gender,
   }) {
     return domain.User(
       id: firebaseUser.uid,
@@ -68,6 +70,7 @@ class AuthService {
       email: firebaseUser.email ?? '',
       phone: phone ?? '',
       role: role ?? domain.UserRole.client,
+      gender: gender,
       photoUrl: firebaseUser.photoURL,
       createdAt: DateTime.now(),
       isActive: true,

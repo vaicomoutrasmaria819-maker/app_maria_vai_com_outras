@@ -3,7 +3,9 @@ import '../../presentation/features/auth/login_page.dart';
 import '../../presentation/features/auth/register_page.dart';
 import '../../domain/entities/user.dart';
 import '../../presentation/features/client/client_home_page.dart';
+import '../../presentation/features/client/quotation_request_page.dart';
 import '../../presentation/features/provider/provider_home_page.dart';
+import '../../presentation/features/provider/quotations_page.dart';
 import '../../presentation/features/admin/admin_dashboard_page.dart';
 import '../../presentation/features/panic/panic_button_page.dart';
 
@@ -36,9 +38,19 @@ final appRouter = GoRouter(
       builder: (context, state) => const ClientHomePage(),
     ),
     GoRoute(
+      path: '/client/quotation',
+      name: 'quotation_request',
+      builder: (context, state) => const QuotationRequestPage(),
+    ),
+    GoRoute(
       path: '/provider',
       name: 'provider_home',
       builder: (context, state) => const ProviderHomePage(),
+    ),
+    GoRoute(
+      path: '/provider/quotations',
+      name: 'quotations',
+      builder: (context, state) => const QuotationsPage(),
     ),
     GoRoute(
       path: '/admin',
