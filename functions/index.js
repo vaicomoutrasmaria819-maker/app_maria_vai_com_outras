@@ -21,12 +21,17 @@
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const { setGlobalOptions } = require('firebase-functions/v2');
 const admin = require('firebase-admin');
+const { getFirestore } = require('firebase-admin/firestore');
 const bcrypt = require('bcryptjs');
 
 admin.initializeApp();
 setGlobalOptions({ region: 'southamerica-east1', maxInstances: 10 });
 
-const db = admin.firestore();
+// O banco Firestore deste projeto foi criado com o ID 'mariavaidb' (não
+// '(default)'), então precisamos apontar explicitamente pra ele — do
+// contrário o Admin SDK tentaria acessar um banco '(default)' que não
+// existe neste projeto.
+const db = getFirestore(admin.app(), 'mariavaidb');
 
 const BCRYPT_COST = 12;
 const MAX_FAILED_ATTEMPTS = 5;

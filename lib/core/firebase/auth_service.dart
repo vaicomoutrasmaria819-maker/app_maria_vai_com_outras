@@ -17,7 +17,9 @@ import 'package:mariavai_services/domain/entities/user.dart' as domain;
 ///    regras do Firestore normalmente.
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // Mesmo banco não-default usado em firestore_service.dart.
+  final FirebaseFirestore _firestore =
+      FirebaseFirestore.instanceFor(databaseId: 'mariavaidb');
 
   // Ajuste a região se você fez o deploy das functions em outra (o
   // firebase.json/functions/index.js deste projeto usa

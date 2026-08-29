@@ -20,10 +20,12 @@
  */
 
 const admin = require('firebase-admin');
+const { getFirestore } = require('firebase-admin/firestore');
 const bcrypt = require('bcryptjs');
 
 admin.initializeApp();
-const db = admin.firestore();
+// Mesmo banco não-default usado pelas Cloud Functions — ver index.js.
+const db = getFirestore(admin.app(), 'mariavaidb');
 
 const BCRYPT_COST = 12;
 

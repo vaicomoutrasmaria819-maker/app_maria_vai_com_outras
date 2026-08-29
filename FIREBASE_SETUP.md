@@ -8,7 +8,20 @@ vindo de uma versão antiga deste guia (Firebase Auth direto), a seção
 "Authentication" abaixo mudou bastante — leia com atenção antes de seguir
 os passos antigos de memória.
 
-## 1. Como a autenticação funciona aqui
+## 1. Banco de dados não-default
+
+Este projeto usa um Firestore com ID **`mariavaidb`** (não `(default)`).
+Isso já está configurado em três lugares — se algum dia mudar o ID do
+banco, é aqui que precisa ajustar:
+
+- `firebase.json` → `firestore[0].database`
+- `functions/index.js` e `functions/scripts/seed_test_users.js` →
+  `getFirestore(admin.app(), 'mariavaidb')`
+- `lib/core/firebase/firestore_service.dart` e
+  `lib/core/firebase/auth_service.dart` →
+  `FirebaseFirestore.instanceFor(databaseId: 'mariavaidb')`
+
+## 2. Como a autenticação funciona aqui
 
 - O app **não** chama `FirebaseAuth.createUserWithEmailAndPassword` nem
   `signInWithEmailAndPassword`.
@@ -26,7 +39,7 @@ os passos antigos de memória.
   Authentication → Users → Add user**. Eles só aparecem lá depois do
   primeiro login bem-sucedido pelo app.
 
-## 2. O que configurar no Console
+## 3. O que configurar no Console
 
 ### Authentication
 Nada a habilitar aqui — não usamos nenhum provedor de sign-in do
@@ -70,7 +83,7 @@ sem isso.
 2. Web: já configurado via `web/firebase-messaging-sw.js`
 3. iOS: precisa subir o certificado APNs quando for publicar de verdade
 
-## 3. Usuários de teste
+## 4. Usuários de teste
 
 Como não existe mais tela de "Add user" manual no Console para este
 fluxo, use o script já pronto:
@@ -93,7 +106,7 @@ O código de acesso de admin pra criar novas contas de admin pelo app é o
 valor que você definiu no `ADMIN_ACCESS_CODE` (passo acima) — não existe
 mais um código fixo no código-fonte do app.
 
-## 4. Estrutura de dados (coleções)
+## 5. Estrutura de dados (coleções)
 
 - `users/{uid}` — perfil público (nome, email, telefone, papel)
 - `users_private/{uid}` — **nunca lido pelo cliente**: hash bcrypt, papel,
@@ -108,7 +121,7 @@ mais um código fixo no código-fonte do app.
   `longitude`, `status`, ...) — leitura restrita ao próprio usuário e a
   admins, por ser dado sensível de segurança pessoal
 
-## 5. Storage — pastas
+## 6. Storage — pastas
 
 - `/profile-pictures/{uid}/` — cada usuário só escreve na própria pasta;
   qualquer usuário autenticado pode ler (perfis são exibidos entre
@@ -119,7 +132,7 @@ mais um código fixo no código-fonte do app.
 - `/documents/{uid}/` — documentos sensíveis (ex: identidade de
   prestadoras), só o dono acessa
 
-## 6. Deploy completo (checklist)
+## 7. Deploy completo (checklist)
 
 ```bash
 firebase login
@@ -127,7 +140,7 @@ cd C:\Users\Paulo\mariavai_services
 firebase deploy --only firestore:rules,firestore:indexes,storage,functions
 ```
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 **"Firebase has not been correctly initialized"**
 Confira `lib/firebase_options.dart` — as chaves precisam ser reais (não
@@ -148,7 +161,7 @@ Confirme que o plano é Blaze e que o deploy das functions terminou sem
 erro (`firebase deploy --only functions`). Veja os logs com
 `firebase functions:log`.
 
-## 8. Para produção (antes de lançar de verdade)
+## 9. Para produção (antes de lançar de verdade)
 
 1. Trocar `ADMIN_ACCESS_CODE` por um valor forte e único
 2. Revisar `firestore.rules`/`storage.rules` — comece restritivo e libere

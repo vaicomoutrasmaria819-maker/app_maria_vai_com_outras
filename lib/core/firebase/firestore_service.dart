@@ -5,7 +5,11 @@ import 'package:mariavai_services/domain/entities/payment.dart' as domain;
 import 'package:mariavai_services/domain/entities/panic_alert.dart' as domain;
 
 class FirestoreService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // O banco Firestore deste projeto foi criado com o ID 'mariavaidb' (não
+  // '(default)'), então FirebaseFirestore.instance (que assume o banco
+  // default) não funcionaria aqui — precisa apontar explicitamente.
+  final FirebaseFirestore _firestore =
+      FirebaseFirestore.instanceFor(databaseId: 'mariavaidb');
 
   // Coleções
   static const String usersCollection = 'users';
