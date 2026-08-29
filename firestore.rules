@@ -1,0 +1,104 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function role() {
+      return request.auth.token.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && role() == 'admin';
+    }
+
+    // Nunca acessível pelo cliente. Só as Cloud Functions (Admin SDK)
+    // leem/escrevem aqui — é onde fica o hash bcrypt da senha.
+    match /users_private/{uid} {
+      allow read, write: if false;
+    }
+
+    // Idem: usado só pelas Cloud Functions para localizar uid a partir do
+    // email no login/registro.
+    match /email_index/{email} {
+      allow read, write: if false;
+    }
+
+    // Perfil público de cada usuário: o dono lê/edita o próprio perfil,
+    // admin lê todos.
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isOwner(uid) || isAdmin();
+    }
+
+    // Solicitações de serviço: cliente vê/edita as suas, prestadora vê/edita
+    // as que aceitou (ou as que ainda não têm prestadora, fase de
+    // orçamento), admin vê tudo.
+    match /services/{serviceId} {
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        resource.data.clientId == request.auth.uid ||
+        resource.data.providerId == request.auth.uid ||
+        resource.data.providerId == ''
+      );
+
+      allow create: if isSignedIn() &&
+        request.resource.data.clientId == request.auth.uid;
+
+      allow update: if isSignedIn() && (
+        isAdmin() ||
+        resource.data.clientId == request.auth.uid ||
+        resource.data.providerId == request.auth.uid
+      );
+    }
+
+    // Pagamentos: Payment só guarda serviceId (sem clientId/providerId
+    // próprios), então buscamos o serviço relacionado pra saber quem tem
+    // permissão. Cliente e prestadora envolvidos veem o próprio pagamento,
+    // admin vê todos. Ninguém edita depois de criado pelo cliente (mudança
+    // de status deve passar por Cloud Function no futuro, quando integrar
+    // um gateway de pagamento de verdade).
+    function relatedService(serviceId) {
+      return get(/databases/$(database)/documents/services/$(serviceId)).data;
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        relatedService(resource.data.serviceId).clientId == request.auth.uid ||
+        relatedService(resource.data.serviceId).providerId == request.auth.uid
+      );
+
+      allow create: if isSignedIn() &&
+        relatedService(request.resource.data.serviceId).clientId == request.auth.uid;
+
+      allow update: if isAdmin();
+    }
+
+    // Alertas de pânico: qualquer usuário autenticado pode criar o
+    // próprio alerta. Leitura/atualização (ex: marcar como atendido) fica
+    // restrita à própria pessoa e a admins — é dado sensível de segurança
+    // pessoal, não deve vazar para outros usuários comuns.
+    match /panic_alerts/{alertId} {
+      allow create: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid;
+
+      allow read, update: if isSignedIn() && (
+        isAdmin() || resource.data.userId == request.auth.uid
+      );
+    }
+
+    // Ajuste as regras abaixo conforme novas coleções forem adicionadas —
+    // comece restritivo e vá liberando por caso de uso específico.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

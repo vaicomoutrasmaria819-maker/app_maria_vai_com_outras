@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Fotos de perfil: cada usuário só sobrescreve a própria pasta;
+    // qualquer pessoa logada pode ver (fotos de perfil são exibidas para
+    // outros usuários no app, ex: prestadora vendo cliente e vice-versa).
+    match /profile-pictures/{uid}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Fotos de serviços: qualquer usuário autenticado pode ler (cliente e
+    // prestadora envolvidos, mas também simplifica ao não checar o
+    // documento do serviço aqui); escrita liberada para autenticados —
+    // ajuste depois se quiser restringir só ao cliente/prestador daquele
+    // serviço específico.
+    match /service-photos/{serviceId}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Documentos (ex: comprovantes, identidade de prestadoras): mais
+    // sensível, então cada usuário só acessa a própria pasta.
+    match /documents/{uid}/{fileName} {
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Qualquer outro caminho fica bloqueado por padrão.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
