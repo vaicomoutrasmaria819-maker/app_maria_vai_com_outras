@@ -1,189 +1,162 @@
-# Firebase Setup Guide
+# Firebase Setup — Maria Vai
 
-This guide will help you configure Firebase for the Maria Vai app.
+**Projeto**: `mariavaicomoutras-e7c28` (número `998255141329`)
 
-## 1. Create Firebase Project
+⚠️ Este projeto usa um sistema de **autenticação próprio com bcrypt**, não o
+provedor de Email/Senha do Firebase Authentication. Se você chegou aqui
+vindo de uma versão antiga deste guia (Firebase Auth direto), a seção
+"Authentication" abaixo mudou bastante — leia com atenção antes de seguir
+os passos antigos de memória.
 
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Click "Add project"
-3. Enter project name: `mariavai-services` (or use existing: `mariavaicomoutras-e7c28`)
-4. Enable Google Analytics (optional)
-5. Click "Create project"
+## 1. Como a autenticação funciona aqui
 
-## 2. Configure Firebase using FlutterFire CLI
+- O app **não** chama `FirebaseAuth.createUserWithEmailAndPassword` nem
+  `signInWithEmailAndPassword`.
+- Duas Cloud Functions (`functions/index.js`) fazem o trabalho:
+  - `registerUser`: recebe nome/email/telefone/senha/papel, hasheia a
+    senha com **bcrypt** (custo 12) e salva em `users_private/{uid}`
+    (coleção bloqueada para qualquer leitura via cliente).
+  - `loginUser`: busca o hash, compara com bcrypt, e bloqueia a conta por
+    15 minutos após 5 tentativas erradas.
+- Em caso de sucesso, ambas devolvem um **Firebase Custom Token**. O app
+  troca esse token por uma sessão real com `signInWithCustomToken()` — é
+  só nesse momento que a conta passa a existir no Firebase Authentication
+  (criada automaticamente pelo SDK, sem senha nenhuma associada lá).
+- Isso significa: **você não cria usuários manualmente em
+  Authentication → Users → Add user**. Eles só aparecem lá depois do
+  primeiro login bem-sucedido pelo app.
 
-The project is already configured with Firebase options in `lib/firebase_options.dart`. To update it with your actual Firebase project:
+## 2. O que configurar no Console
 
-### Option A: Using FlutterFire CLI (Recommended)
+### Authentication
+Nada a habilitar aqui — não usamos nenhum provedor de sign-in do
+Firebase Auth (nem Email/Senha, nem Google). Os Custom Tokens funcionam
+sem isso.
 
-1. Install Firebase CLI: `npm install -g firebase-tools`
-2. Login to Firebase: `firebase login`
-3. Run: `flutterfire configure --project=mariavaicomoutras-e7c28`
-4. This will automatically update `lib/firebase_options.dart` with your real config
-
-### Option B: Manual Configuration
-
-1. In Firebase Console, add your platforms (Web, Android, iOS)
-2. Download the config files for each platform
-3. For Web: Add Firebase SDK scripts to `web/index.html` (already done)
-4. For Android: Place `google-services.json` in `android/app/`
-5. For iOS: Place `GoogleService-Info.plist` in `ios/Runner/`
-6. Update `lib/firebase_options.dart` with your actual keys
-
-## 3. Android Setup
-
-1. In Firebase Console, click the Android icon
-2. Package name: `com.mariavai.mariavai_services`
-3. Download `google-services.json`
-4. Place it in `android/app/google-services.json`
-5. Add dependencies to `android/build.gradle`:
-   ```gradle
-   buildscript {
-     dependencies {
-       classpath 'com.google.gms:google-services:4.3.15'
-     }
-   }
-   ```
-6. Add to `android/app/build.gradle`:
-   ```gradle
-   apply plugin: 'com.google.gms.google-services'
+### Cloud Firestore
+1. Firestore Database → Create database
+2. Localização: `southamerica-east1` (São Paulo)
+3. Modo: **produção** (não teste — as regras em `firestore.rules` já
+   cobrem os casos de uso reais do app)
+4. Publique as regras e índices deste projeto:
+   ```bash
+   firebase deploy --only firestore:rules,firestore:indexes
    ```
 
-## 4. iOS Setup
+### Firebase Storage
+1. Storage → Get started
+2. Localização: mesma do Firestore (`southamerica-east1`)
+3. Modo produção
+4. Publique as regras:
+   ```bash
+   firebase deploy --only storage
+   ```
 
-1. In Firebase Console, click the iOS icon
-2. Bundle ID: `com.mariavai.mariavaiServices`
-3. Download `GoogleService-Info.plist`
-4. Place it in `ios/Runner/GoogleService-Info.plist`
+### Cloud Functions
+1. Requer o plano **Blaze** (pay-as-you-go) — o Spark (grátis) não
+   permite Cloud Functions. Tem cota gratuita mensal generosa.
+2. Defina o código de acesso de admin como secret (nunca no código):
+   ```bash
+   firebase functions:secrets:set ADMIN_ACCESS_CODE
+   ```
+3. Deploy:
+   ```bash
+   cd functions && npm install && cd ..
+   firebase deploy --only functions
+   ```
 
-## 3. Enable Firebase Services
+### Cloud Messaging (notificações push)
+1. Cloud Messaging → Get started
+2. Web: já configurado via `web/firebase-messaging-sw.js`
+3. iOS: precisa subir o certificado APNs quando for publicar de verdade
 
-### Authentication:
+## 3. Usuários de teste
 
-1. Go to Authentication → Sign-in method
-2. Enable Email/Password
-3. Optionally enable Google Sign-in
+Como não existe mais tela de "Add user" manual no Console para este
+fluxo, use o script já pronto:
 
-### Cloud Firestore:
-
-1. Go to Firestore Database → Create database
-2. Choose location (e.g., southamerica-east1 for Brazil)
-3. Start in test mode
-4. Set up security rules (see below)
-
-### Firebase Storage:
-
-1. Go to Storage → Get started
-2. Choose location (same as Firestore)
-3. Start in test mode
-4. Set up security rules (see below)
-
-### Cloud Messaging:
-
-1. Go to Cloud Messaging → Get started
-2. Enable Cloud Messaging API
-3. Upload APNs certificate (for iOS)
-
-## 4. Security Rules
-
-### Firestore Rules:
-
-```firestore
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Users can read/write their own data
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    
-    // Services: clients can read their own, providers can read assigned
-    match /services/{serviceId} {
-      allow read: if request.auth != null && 
-        (resource.data.clientId == request.auth.uid || 
-         resource.data.providerId == request.auth.uid);
-      allow create: if request.auth != null;
-      allow update: if request.auth != null && 
-        (resource.data.clientId == request.auth.uid || 
-         resource.data.providerId == request.auth.uid);
-    }
-    
-    // Payments: only admins can read all
-    match /payments/{paymentId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null;
-    }
-    
-    // Panic alerts: users can create, admins can read all
-    match /panic_alerts/{alertId} {
-      allow create: if request.auth != null;
-      allow read: if request.auth != null;
-      allow update: if request.auth != null;
-    }
-  }
-}
+```bash
+cd functions
+npm install
+node scripts/seed_test_users.js
 ```
 
-### Storage Rules:
+Isso cria diretamente no Firestore (com senha já em bcrypt):
 
-```firestore
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
-    }
-  }
-}
+| Papel      | Email                  | Senha           |
+|------------|------------------------|-----------------|
+| Cliente    | cliente@teste.com      | cliente123      |
+| Prestadora | prestadora@teste.com   | prestadora123   |
+| Admin      | admin@teste.com        | admin123        |
+
+O código de acesso de admin pra criar novas contas de admin pelo app é o
+valor que você definiu no `ADMIN_ACCESS_CODE` (passo acima) — não existe
+mais um código fixo no código-fonte do app.
+
+## 4. Estrutura de dados (coleções)
+
+- `users/{uid}` — perfil público (nome, email, telefone, papel)
+- `users_private/{uid}` — **nunca lido pelo cliente**: hash bcrypt, papel,
+  contador de tentativas de login
+- `email_index/{email}` — mapeia email → uid, usado só pelas functions
+- `services/{id}` — solicitações de serviço (`clientId`, `providerId`,
+  `status`, `createdAt`, ...)
+- `payments/{id}` — pagamentos (`serviceId`, `amount`, `status`, ...) —
+  não guarda `clientId`/`providerId` direto, as regras buscam o serviço
+  relacionado pra checar permissão
+- `panic_alerts/{id}` — alertas de pânico (`userId`, `latitude`,
+  `longitude`, `status`, ...) — leitura restrita ao próprio usuário e a
+  admins, por ser dado sensível de segurança pessoal
+
+## 5. Storage — pastas
+
+- `/profile-pictures/{uid}/` — cada usuário só escreve na própria pasta;
+  qualquer usuário autenticado pode ler (perfis são exibidos entre
+  cliente/prestadora)
+- `/service-photos/{serviceId}/` — leitura/escrita liberada a qualquer
+  autenticado (ajustar depois se quiser restringir ao par
+  cliente/prestador daquele serviço)
+- `/documents/{uid}/` — documentos sensíveis (ex: identidade de
+  prestadoras), só o dono acessa
+
+## 6. Deploy completo (checklist)
+
+```bash
+firebase login
+cd C:\Users\Paulo\mariavai_services
+firebase deploy --only firestore:rules,firestore:indexes,storage,functions
 ```
 
-## 5. Initialize Firebase in App
+## 7. Troubleshooting
 
-The app is already configured to initialize Firebase in `lib/main.dart`:
+**"Firebase has not been correctly initialized"**
+Confira `lib/firebase_options.dart` — as chaves precisam ser reais (não
+`AIzaSyDummyKeyForDevelopment`), uma por plataforma.
 
-```dart
-await FirebaseService.initialize();
-await MessagingService().initialize();
-```
+**"api-key-not-valid"**
+Geralmente é cache do navegador (Service Worker do Flutter Web). Feche o
+Chrome, rode `flutter clean && flutter pub get` e teste de novo com
+Ctrl+Shift+R.
 
-## 6. Test Firebase Connection
+**"PERMISSION_DENIED" no Firestore/Storage**
+Confira se `firestore.rules`/`storage.rules` foram de fato publicadas
+(`firebase deploy --only firestore:rules,storage`), e se o campo que a
+regra verifica (ex: `clientId`) realmente existe no documento.
 
-Run the app and check the console for Firebase initialization messages.
+**Erro ao chamar `registerUser`/`loginUser` do app**
+Confirme que o plano é Blaze e que o deploy das functions terminou sem
+erro (`firebase deploy --only functions`). Veja os logs com
+`firebase functions:log`.
 
-## 7. Cloud Functions (Optional)
+## 8. Para produção (antes de lançar de verdade)
 
-For production, consider setting up Cloud Functions for:
-- Sending push notifications for panic alerts
-- Processing payments
-- Sending email notifications
-- Scheduling reminders
-
-## 8. Indexes (Optional)
-
-For complex queries, you may need to create indexes in Firestore:
-- Go to Firestore → Indexes → Composite Indexes
-- Create indexes for common query patterns
-
-## Troubleshooting
-
-### "Firebase has not been correctly initialized"
-- Make sure Firebase is initialized before using any Firebase service
-- Check that your config is correct
-
-### "Permission denied"
-- Check your Firestore and Storage security rules
-- Make sure users are authenticated
-
-### "Missing plugin"
-- Run `flutter pub get`
-- Check platform-specific setup (google-services.json, GoogleService-Info.plist)
-
-## Next Steps
-
-1. Test authentication with real users
-2. Test Firestore CRUD operations
-3. Test image uploads to Storage
-4. Test push notifications
-5. Set up proper security rules for production
-6. Consider implementing Cloud Functions
+1. Trocar `ADMIN_ACCESS_CODE` por um valor forte e único
+2. Revisar `firestore.rules`/`storage.rules` — comece restritivo e libere
+   só o que o app realmente usa
+3. Ativar o **Firebase App Check** (Play Integrity no Android, reCAPTCHA
+   v3 na Web) pra impedir chamadas às Cloud Functions vindas de fora do
+   app
+4. Configurar alerta de orçamento em Settings → Usage and billing
+5. Implementar o fluxo de "esqueci minha senha" (ainda não existe no
+   sistema de auth próprio — precisa de uma Cloud Function de envio de
+   código por email)

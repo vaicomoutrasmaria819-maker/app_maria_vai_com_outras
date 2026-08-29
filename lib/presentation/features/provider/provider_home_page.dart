@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mariavai_services/presentation/features/provider/quotations_page.dart' as quotations;
 
 class ProviderHomePage extends StatefulWidget {
   const ProviderHomePage({super.key});
@@ -15,7 +14,6 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   final List<Widget> _pages = [
     const ProviderJobsPage(),
-    const quotations.QuotationsPage(),
     const ProviderEarningsPage(),
     const ProviderProfilePage(),
   ];
@@ -39,15 +37,10 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.work),
             label: 'Trabalhos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.request_quote),
-            label: 'Orçamentos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_balance_wallet),

@@ -1,11 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 enum ServiceStatus {
-  quotation,      // Fase de orçamento
-  pending,       // Aguardando aceitação
-  inProgress,    // Em andamento
-  completed,     // Concluído
-  cancelled,     // Cancelado
+  pending,
+  inProgress,
+  completed,
+  cancelled,
 }
 
 class Service extends Equatable {

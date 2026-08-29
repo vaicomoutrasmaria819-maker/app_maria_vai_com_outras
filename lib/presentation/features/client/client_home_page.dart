@@ -53,11 +53,27 @@ class _ClientHomePageState extends State<ClientHomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/client/quotation'),
+        onPressed: () => _showNewServiceDialog(context),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
-        icon: const Icon(Icons.request_quote),
-        label: const Text('Solicitar Orçamento'),
+        icon: const Icon(Icons.add),
+        label: const Text('Novo Serviço'),
+      ),
+    );
+  }
+
+  void _showNewServiceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Solicitar Novo Serviço'),
+        content: const Text('Funcionalidade de criação de serviço será implementada.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Fechar'),
+          ),
+        ],
       ),
     );
   }

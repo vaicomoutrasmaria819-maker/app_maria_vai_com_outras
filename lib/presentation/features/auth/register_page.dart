@@ -26,22 +26,18 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _accessCodeController = TextEditingController();
-  domain.Gender? _selectedGender;
 
   final _authService = AuthService();
-  final _firestoreService = FirestoreService();
 
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   String? _errorMessage;
 
-  // ATENÇÃO (produção): este código fixo é só um bloqueio simples para não
-  // deixar o cadastro de admin 100% público. Antes de lançar de verdade,
-  // troque por uma validação server-side (ex: Cloud Function conferindo um
-  // convite de uso único salvo no Firestore), porque qualquer pessoa que
-  // ler o código-fonte do app consegue ver esta string.
-  static const String _adminAccessCode = 'MARIAVAI-ADMIN-2026';
+  // O código de acesso de admin agora é validado no servidor (Cloud
+  // Function `registerUser`, via configuração segura), não mais aqui no
+  // app — evita que qualquer pessoa veja o código lendo o código-fonte
+  // compilado do app.
 
   String get _title {
     switch (widget.role) {
@@ -79,33 +75,22 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (widget.role == domain.UserRole.admin &&
-        _accessCodeController.text.trim() != _adminAccessCode) {
-      setState(() {
-        _errorMessage = 'Código de acesso administrativo inválido';
-      });
-      return;
-    }
-
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
     try {
-      final user = await _authService.registerWithEmailAndPassword(
+      await _authService.registerWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
         name: _nameController.text.trim(),
         phone: _phoneController.text.trim(),
         role: widget.role,
-        gender: _selectedGender,
+        adminAccessCode: widget.role == domain.UserRole.admin
+            ? _accessCodeController.text.trim()
+            : null,
       );
-
-      // Salva o documento completo do usuário no Firestore, incluindo o
-      // papel (client/provider/admin), para o login saber para onde
-      // redirecionar da próxima vez.
-      await _firestoreService.createUser(user);
 
       if (!mounted) return;
 
@@ -198,61 +183,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         ? 'Informe seu telefone'
                         : null,
                   ),
-                  const SizedBox(height: 16),
-                  if (widget.role == domain.UserRole.provider) ...[
-                    DropdownButtonFormField<domain.Gender>(
-                      value: _selectedGender,
-                      decoration: const InputDecoration(
-                        labelText: 'Gênero',
-                        prefixIcon: Icon(Icons.wc),
-                        border: OutlineInputBorder(),
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: domain.Gender.female,
-                          child: Text('Feminino'),
-                        ),
-                        DropdownMenuItem(
-                          value: domain.Gender.male,
-                          child: Text('Masculino'),
-                        ),
-                        DropdownMenuItem(
-                          value: domain.Gender.other,
-                          child: Text('Outro'),
-                        ),
-                        DropdownMenuItem(
-                          value: domain.Gender.preferNotToSay,
-                          child: Text('Prefiro não dizer'),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        setState(() => _selectedGender = value);
-                      },
-                      validator: (value) => (value == null)
-                          ? 'Selecione seu gênero'
-                          : null,
-                    ),
-                    const SizedBox(height: 8),
-                    Card(
-                      color: Colors.pink[50],
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.info_outline, color: Colors.pink, size: 20),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                'Clientes podem filtrar por profissionais femininas',
-                                style: GoogleFonts.poppins(fontSize: 12),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _passwordController,
