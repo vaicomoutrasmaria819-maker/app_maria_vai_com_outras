@@ -6,7 +6,10 @@ plugins {
 
 android {
     namespace = "com.mariavai.mariavai_services"
-    compileSdk = flutter.compileSdkVersion
+    // Forced to 36 instead of flutter.compileSdkVersion: some plugins (e.g.
+    // connectivity_plus) pull in AndroidX libraries that require compiling
+    // against API 34+, and the Flutter-provided default was resolving to 33.
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

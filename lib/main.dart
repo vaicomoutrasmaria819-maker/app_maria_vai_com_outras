@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'core/router/app_router.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/firebase/messaging_service.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

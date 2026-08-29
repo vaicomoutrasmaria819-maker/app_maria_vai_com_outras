@@ -6,20 +6,31 @@ This guide will help you configure Firebase for the Maria Vai app.
 
 1. Go to [Firebase Console](https://console.firebase.google.com/)
 2. Click "Add project"
-3. Enter project name: `mariavai-services`
+3. Enter project name: `mariavai-services` (or use existing: `mariavaicomoutras-e7c28`)
 4. Enable Google Analytics (optional)
 5. Click "Create project"
 
-## 2. Add Firebase to Your Flutter App
+## 2. Configure Firebase using FlutterFire CLI
 
-### For Web:
+The project is already configured with Firebase options in `lib/firebase_options.dart`. To update it with your actual Firebase project:
 
-1. In Firebase Console, click the web icon (</>)
-2. Register app: `mariavai-web`
-3. Copy the Firebase config snippet
-4. Replace the config in `web/firebase-config.js` with your actual config
+### Option A: Using FlutterFire CLI (Recommended)
 
-### For Android:
+1. Install Firebase CLI: `npm install -g firebase-tools`
+2. Login to Firebase: `firebase login`
+3. Run: `flutterfire configure --project=mariavaicomoutras-e7c28`
+4. This will automatically update `lib/firebase_options.dart` with your real config
+
+### Option B: Manual Configuration
+
+1. In Firebase Console, add your platforms (Web, Android, iOS)
+2. Download the config files for each platform
+3. For Web: Add Firebase SDK scripts to `web/index.html` (already done)
+4. For Android: Place `google-services.json` in `android/app/`
+5. For iOS: Place `GoogleService-Info.plist` in `ios/Runner/`
+6. Update `lib/firebase_options.dart` with your actual keys
+
+## 3. Android Setup
 
 1. In Firebase Console, click the Android icon
 2. Package name: `com.mariavai.mariavai_services`
@@ -38,7 +49,7 @@ This guide will help you configure Firebase for the Maria Vai app.
    apply plugin: 'com.google.gms.google-services'
    ```
 
-### For iOS:
+## 4. iOS Setup
 
 1. In Firebase Console, click the iOS icon
 2. Bundle ID: `com.mariavai.mariavaiServices`
