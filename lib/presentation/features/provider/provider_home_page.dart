@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'quotations_page.dart' as quotations;
+import 'package:mariavai_services/presentation/features/provider/quotations_page.dart' as quotations;
 
 class ProviderHomePage extends StatefulWidget {
   const ProviderHomePage({super.key});
