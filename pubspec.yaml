@@ -41,6 +41,9 @@ dependencies:
   dio: ^5.4.0
   connectivity_plus: ^6.0.0
 
+  # Media (used by storage_service.dart to pick images before upload)
+  image_picker: ^1.1.2
+
   # Firebase (bumped to the dart:js_interop-based generation, compatible
   # with modern Dart SDKs — old js_util-based versions fail to build on web)
   firebase_core: ^3.0.0
