@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'core/router/app_router.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/firebase/messaging_service.dart';
+import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,16 +39,15 @@ class MariaVaiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Maria Vai - Serviços para Mulheres',
+      title: AppTheme.appName,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFE91E63), // Pink for women-focused app
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-        textTheme: GoogleFonts.poppinsTextTheme(),
+      theme: AppTheme.lightTheme.copyWith(
+        textTheme: GoogleFonts.poppinsTextTheme(AppTheme.lightTheme.textTheme),
       ),
+      darkTheme: AppTheme.darkTheme.copyWith(
+        textTheme: GoogleFonts.poppinsTextTheme(AppTheme.darkTheme.textTheme),
+      ),
+      themeMode: ThemeMode.system,
       routerConfig: appRouter,
     );
   }

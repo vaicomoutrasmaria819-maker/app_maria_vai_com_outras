@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mariavai_services/core/firebase/auth_service.dart';
 import 'package:mariavai_services/core/firebase/firestore_service.dart';
+import 'package:mariavai_services/core/theme/app_theme.dart';
+import 'package:mariavai_services/core/widgets/branding_logo.dart';
 import 'package:mariavai_services/domain/entities/user.dart';
 
 class LoginPage extends StatefulWidget {
@@ -90,31 +92,45 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(
-                    Icons.people_alt_rounded,
-                    size: 80,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 16),
+                  const BrandingLogo(size: 200),
+                  const SizedBox(height: 24),
                   Text(
-                    'Maria Vai Com As Outras',
+                    AppTheme.appName,
                     style: GoogleFonts.poppins(
-                      fontSize: 32,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryBlack,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      AppTheme.subtitle,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryWhite,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   Text(
-                    'Serviços para Mulheres',
+                    AppTheme.slogan,
                     style: GoogleFonts.poppins(
                       fontSize: 16,
-                      color: Colors.grey[600],
+                      fontStyle: FontStyle.italic,
+                      color: Colors.grey[700],
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 32),
                   TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(
