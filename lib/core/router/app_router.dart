@@ -1,11 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../presentation/features/auth/login_page.dart';
-import '../../presentation/features/auth/register_page.dart';
-import '../../domain/entities/user.dart';
+import '../../presentation/features/auth/login_page_mvp.dart';
 import '../../presentation/features/client/client_home_page.dart';
 import '../../presentation/features/provider/provider_home_page.dart';
 import '../../presentation/features/admin/admin_dashboard_page.dart';
 import '../../presentation/features/panic/panic_button_page.dart';
+import '../../presentation/features/chat/chat_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -13,22 +13,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/login',
       name: 'login',
-      builder: (context, state) => const LoginPage(),
-    ),
-    GoRoute(
-      path: '/register/client',
-      name: 'register_client',
-      builder: (context, state) => const RegisterPage(role: UserRole.client),
-    ),
-    GoRoute(
-      path: '/register/provider',
-      name: 'register_provider',
-      builder: (context, state) => const RegisterPage(role: UserRole.provider),
-    ),
-    GoRoute(
-      path: '/register/admin',
-      name: 'register_admin',
-      builder: (context, state) => const RegisterPage(role: UserRole.admin),
+      builder: (context, state) => const LoginPageMVP(),
     ),
     GoRoute(
       path: '/client',
@@ -49,6 +34,23 @@ final appRouter = GoRouter(
       path: '/panic',
       name: 'panic',
       builder: (context, state) => const PanicButtonPage(),
+    ),
+    GoRoute(
+      path: '/chat',
+      name: 'chat',
+      builder: (context, state) {
+        final currentUserId = state.uri.queryParameters['currentUserId'] ?? 'client_1';
+        final otherUserId = state.uri.queryParameters['otherUserId'] ?? 'provider_1';
+        final otherUserName = state.uri.queryParameters['otherUserName'] ?? 'Prestadora';
+        final serviceId = state.uri.queryParameters['serviceId'];
+        
+        return ChatPage(
+          currentUserId: currentUserId,
+          otherUserId: otherUserId,
+          otherUserName: otherUserName,
+          serviceId: serviceId,
+        );
+      },
     ),
   ],
 );

@@ -23,7 +23,7 @@ class PaymentService {
       processedAt: DateTime.now(),
       transactionId: 'txn_${DateTime.now().millisecondsSinceEpoch}',
       qrCodePix: method == PaymentMethod.pix ? '00020126580014br.gov.bcb.pix0136' : null,
-      boletoUrl: method == PaymentMethod.boleto ? 'https://mercadopago.com/boleto/12345' : null,
+      boletoUrl: method == PaymentMethod.boleto ? 'https://mercadopago.com/boleto/12345' : null, providerAmount: 1,
     );
   }
 

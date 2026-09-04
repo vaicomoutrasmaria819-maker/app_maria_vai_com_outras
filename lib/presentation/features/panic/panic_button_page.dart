@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mariavai_services/core/firebase/firestore_service.dart';
+// import 'package:mariavai_services/core/firebase/firestore_service.dart';
 import 'package:mariavai_services/domain/entities/panic_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,7 +19,8 @@ class _PanicButtonPageState extends State<PanicButtonPage> {
   bool _isLoading = false;
   String? _currentLocation;
   DateTime? _triggeredAt;
-  final FirestoreService _firestoreService = FirestoreService();
+  // MVP: Firestore desabilitado
+  // final FirestoreService _firestoreService = FirestoreService();
   final String _userId = 'current_user_id'; // TODO: Get from auth
 
   Future<void> _getCurrentLocation() async {
@@ -107,7 +108,9 @@ class _PanicButtonPageState extends State<PanicButtonPage> {
       );
 
       try {
-        await _firestoreService.createPanicAlert(alert);
+        // MVP: Firestore desabilitado
+        // await _firestoreService.createPanicAlert(alert);
+        print('MVP: Alerta de pânico não salvo no Firebase (desabilitado)');
       } catch (e) {
         print('Erro ao criar alerta no Firestore: $e');
       }

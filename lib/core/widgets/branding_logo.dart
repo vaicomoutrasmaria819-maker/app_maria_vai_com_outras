@@ -12,7 +12,7 @@ class BrandingLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: size,
-      height: size * 0.6,
+      height: size * 0.5,
       child: CustomPaint(
         painter: _LogoPainter(),
       ),

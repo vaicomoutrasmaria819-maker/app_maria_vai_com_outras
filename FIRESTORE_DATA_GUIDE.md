@@ -195,64 +195,32 @@ Armazena alertas de emergência.
 
 ### Script de Seed (População Inicial)
 
-```dart
-// scripts/seed_firestore.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+⚠️ **IMPORTANTE**: Este script requer o arquivo `scripts/service-account.json` do Firebase.
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  await Firebase.initializeApp();
-  
-  final firestore = FirebaseFirestore.instanceFor(
-    databaseId: 'mariavaidb',
-  );
-  
-  // Criar usuários de teste
-  final users = [
-    {
-      'name': 'Maria Silva',
-      'email': 'cliente@teste.com',
-      'phone': '(11) 99999-1001',
-      'role': 'client',
-      'photoUrl': null,
-      'createdAt': FieldValue.serverTimestamp(),
-      'isActive': true,
-    },
-    {
-      'name': 'Ana Costa',
-      'email': 'prestadora@teste.com',
-      'phone': '(11) 99999-1002',
-      'role': 'provider',
-      'photoUrl': null,
-      'createdAt': FieldValue.serverTimestamp(),
-      'isActive': true,
-    },
-    {
-      'name': 'Administrador',
-      'email': 'admin@teste.com',
-      'phone': '(11) 99999-1003',
-      'role': 'admin',
-      'photoUrl': null,
-      'createdAt': FieldValue.serverTimestamp(),
-      'isActive': true,
-    },
-  ];
-  
-  for (final user in users) {
-    await firestore.collection('users').add(user);
-    print('Usuário criado: ${user['email']}');
-  }
-  
-  print('✅ Seed concluído!');
-}
-```
+**Se você não tem este arquivo, veja `SERVICE_ACCOUNT_GUIDE.md` para instruções ou use a opção manual abaixo.**
 
-Para rodar:
+**Pré-requisitos:**
 ```bash
-dart scripts/seed_firestore.dart
+# Instalar Node.js se não tiver
+# https://nodejs.org/
+
+# As dependências já foram instaladas (firebase-admin)
 ```
+
+**Para rodar:**
+```bash
+# Se estiver no diretório raiz do projeto:
+node scripts/seed_firestore.js service-account.json
+
+# Se estiver no diretório scripts:
+node seed_firestore.js service-account.json
+```
+
+Onde `scripts/service-account.json` é o arquivo JSON da service account do Firebase (obtido em: Firebase Console → Project Settings → Service Accounts → Generate New Private Key).
+
+**Se não tiver a service account ou quiser algo mais rápido:**
+- Use a opção manual abaixo (criar dados no Console)
+- Veja `SERVICE_ACCOUNT_GUIDE.md` para instruções detalhadas
 
 ---
 

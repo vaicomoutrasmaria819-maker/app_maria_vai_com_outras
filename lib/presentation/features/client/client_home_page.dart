@@ -104,34 +104,37 @@ class ClientServicesPage extends StatelessWidget {
               mainAxisSpacing: 16,
               children: [
                 _ServiceCategoryCard(
-                  icon: Icons.cleaning_services,
-                  title: 'Limpeza',
+                  icon: Icons.plumbing,
+                  title: 'Encanamento',
                   color: Colors.blue,
                 ),
                 _ServiceCategoryCard(
-                  icon: Icons.baby_changing_station,
-                  title: 'Cuidados',
-                  color: Colors.pink,
-                ),
-                _ServiceCategoryCard(
-                  icon: Icons.restaurant,
-                  title: 'Alimentação',
+                  icon: Icons.electrical_services,
+                  title: 'Elétrica',
                   color: Colors.orange,
                 ),
                 _ServiceCategoryCard(
-                  icon: Icons.school,
-                  title: 'Educação',
-                  color: Colors.green,
+                  icon: Icons.construction,
+                  title: 'Alvenaria',
+                  color: Colors.brown,
                 ),
                 _ServiceCategoryCard(
-                  icon: Icons.health_and_safety,
-                  title: 'Saúde',
-                  color: Colors.red,
+                  icon: Icons.layers,
+                  title: 'Pisos',
+                  color: Colors.grey,
                 ),
                 _ServiceCategoryCard(
-                  icon: Icons.face,
-                  title: 'Beleza',
+                  icon: Icons.bathroom,
+                  title: 'Banheiro',
+                  color: Colors.teal,
+                ),
+                _ServiceCategoryCard(
+                  icon: Icons.chat,
+                  title: 'Chat Suporte',
                   color: Colors.purple,
+                  onTap: () => context.push(
+                    '/chat?currentUserId=client_1&otherUserId=provider_1&otherUserName=Ana Costa',
+                  ),
                 ),
               ],
             ),
@@ -146,11 +149,13 @@ class _ServiceCategoryCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final Color color;
+  final VoidCallback? onTap;
 
   const _ServiceCategoryCard({
     required this.icon,
     required this.title,
     required this.color,
+    this.onTap,
   });
 
   @override
@@ -161,7 +166,7 @@ class _ServiceCategoryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: InkWell(
-        onTap: () {
+        onTap: onTap ?? () {
           // TODO: Navigate to service providers
         },
         borderRadius: BorderRadius.circular(16),

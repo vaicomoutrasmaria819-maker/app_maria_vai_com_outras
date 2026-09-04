@@ -132,6 +132,13 @@ class _JobsList extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    IconButton(
+                      onPressed: () => context.push(
+                        '/chat?currentUserId=provider_1&otherUserId=client_1&otherUserName=Maria Silva',
+                      ),
+                      icon: const Icon(Icons.chat),
+                      tooltip: 'Chat com cliente',
+                    ),
                     if (status == 'pending')
                       ElevatedButton.icon(
                         onPressed: () => _acceptJob(context),

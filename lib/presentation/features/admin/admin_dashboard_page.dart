@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mariavai_services/core/firebase/firestore_service.dart';
+// import 'package:mariavai_services/core/firebase/firestore_service.dart';
 import 'package:mariavai_services/domain/entities/payment.dart';
 import 'package:mariavai_services/domain/entities/panic_alert.dart';
 
@@ -220,7 +220,8 @@ class AdminPaymentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firestoreService = FirestoreService();
+    // MVP: Firestore desabilitado - usar dados mockados
+    // final firestoreService = FirestoreService();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -235,143 +236,156 @@ class AdminPaymentsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          StreamBuilder<List<Payment>>(
-            stream: firestoreService.getAllPayments(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (snapshot.hasError) {
-                return Center(child: Text('Erro: ${snapshot.error}'));
-              }
-
-              final payments = snapshot.data ?? [];
-              
-              // Calcular totais
-              double totalProcessed = 0;
-              double totalCommission = 0;
-              double totalPending = 0;
-
-              for (final payment in payments) {
-                if (payment.status == PaymentStatus.completed) {
-                  totalProcessed += payment.amount;
-                  totalCommission += payment.commissionAmount;
-                } else if (payment.status == PaymentStatus.pending) {
-                  totalPending += payment.amount;
-                }
-              }
-
-              return Column(
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: Column(
                 children: [
-                  Card(
-                    color: Colors.green[50],
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Resumo Financeiro',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          _PaymentSummaryRow(
-                            label: 'Total Processado',
-                            value: 'R\$ ${totalProcessed.toStringAsFixed(2)}',
-                            color: Colors.green,
-                          ),
-                          _PaymentSummaryRow(
-                            label: 'Comissões (20%)',
-                            value: 'R\$ ${totalCommission.toStringAsFixed(2)}',
-                            color: Colors.orange,
-                          ),
-                          _PaymentSummaryRow(
-                            label: 'Valor Líquido Prestadores',
-                            value: 'R\$ ${(totalProcessed - totalCommission).toStringAsFixed(2)}',
-                            color: Colors.blue,
-                          ),
-                          const Divider(height: 32),
-                          _PaymentSummaryRow(
-                            label: 'Pagamentos Pendentes',
-                            value: 'R\$ ${totalPending.toStringAsFixed(2)}',
-                            color: Colors.red,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Histórico de Pagamentos',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Card(
-                    child: payments.isEmpty
-                        ? const Padding(
-                            padding: EdgeInsets.all(32.0),
-                            child: Text('Nenhum pagamento encontrado'),
-                          )
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: payments.length,
-                            itemBuilder: (context, index) {
-                              final payment = payments[index];
-                              return ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: payment.status == PaymentStatus.completed
-                                      ? Colors.green
-                                      : Colors.orange,
-                                  child: Icon(
-                                    payment.status == PaymentStatus.completed
-                                        ? Icons.check
-                                        : Icons.pending,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                title: Text('Pagamento #${payment.id.substring(0, 8)}'),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Serviço ID: ${payment.serviceId}'),
-                                    Text('Data: ${payment.createdAt.toLocal().toString().split('.')[0]}'),
-                                  ],
-                                ),
-                                trailing: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'R\$ ${payment.amount.toStringAsFixed(2)}',
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Comissão: R\$ ${payment.commissionAmount.toStringAsFixed(2)}',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                  ),
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('MVP: Dados mockados - Firebase desabilitado'),
                 ],
-              );
-            },
+              ),
+            ),
           ),
+          // MVP: StreamBuilder desabilitado
+          // StreamBuilder<List<Payment>>(
+          //   stream: firestoreService.getAllPayments(),
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return const Center(child: CircularProgressIndicator());
+          //     }
+
+          //     if (snapshot.hasError) {
+          //       return Center(child: Text('Erro: ${snapshot.error}'));
+          //     }
+
+          //     final payments = snapshot.data ?? [];
+              
+          //     // Calcular totais
+          //     double totalProcessed = 0;
+          //     double totalCommission = 0;
+          //     double totalPending = 0;
+
+          //     for (final payment in payments) {
+          //       if (payment.status == PaymentStatus.completed) {
+          //         totalProcessed += payment.amount;
+          //         totalCommission += payment.commissionAmount;
+          //       } else if (payment.status == PaymentStatus.pending) {
+          //         totalPending += payment.amount;
+          //       }
+          //     }
+
+          //     return Column(
+          //       children: [
+          //         Card(
+          //           color: Colors.green[50],
+          //           child: Padding(
+          //             padding: const EdgeInsets.all(16.0),
+          //             child: Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: [
+          //                 const Text(
+          //                   'Resumo Financeiro',
+          //                   style: TextStyle(
+          //                     fontSize: 18,
+          //                     fontWeight: FontWeight.bold,
+          //                   ),
+          //                 ),
+          //                 const SizedBox(height: 16),
+          //                 _PaymentSummaryRow(
+          //                   label: 'Total Processado',
+          //                   value: 'R\$ ${totalProcessed.toStringAsFixed(2)}',
+          //                   color: Colors.green,
+          //                 ),
+          //                 _PaymentSummaryRow(
+          //                   label: 'Comissões (20%)',
+          //                   value: 'R\$ ${totalCommission.toStringAsFixed(2)}',
+          //                   color: Colors.orange,
+          //                 ),
+          //                 _PaymentSummaryRow(
+          //                   label: 'Valor Líquido Prestadores',
+          //                   value: 'R\$ ${(totalProcessed - totalCommission).toStringAsFixed(2)}',
+          //                   color: Colors.blue,
+          //                 ),
+          //                 const Divider(height: 32),
+          //                 _PaymentSummaryRow(
+          //                   label: 'Pagamentos Pendentes',
+          //                   value: 'R\$ ${totalPending.toStringAsFixed(2)}',
+          //                   color: Colors.red,
+          //                 ),
+          //               ],
+          //             ),
+          //           ),
+          //         ),
+          //         const SizedBox(height: 24),
+          //         Text(
+          //           'Histórico de Pagamentos',
+          //           style: GoogleFonts.poppins(
+          //             fontSize: 20,
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //         const SizedBox(height: 16),
+          //         Card(
+          //           child: payments.isEmpty
+          //               ? const Padding(
+          //                   padding: EdgeInsets.all(32.0),
+          //                   child: Text('Nenhum pagamento encontrado'),
+          //                 )
+          //               : ListView.builder(
+          //                   shrinkWrap: true,
+          //                   physics: const NeverScrollableScrollPhysics(),
+          //                   itemCount: payments.length,
+          //                   itemBuilder: (context, index) {
+          //                     final payment = payments[index];
+          //                     return ListTile(
+          //                       leading: CircleAvatar(
+          //                         backgroundColor: payment.status == PaymentStatus.completed
+          //                             ? Colors.green
+          //                             : Colors.orange,
+          //                         child: Icon(
+          //                           payment.status == PaymentStatus.completed
+          //                               ? Icons.check
+          //                               : Icons.pending,
+          //                           color: Colors.white,
+          //                         ),
+          //                       ),
+          //                       title: Text('Pagamento #${payment.id.substring(0, 8)}'),
+          //                       subtitle: Column(
+          //                         crossAxisAlignment: CrossAxisAlignment.start,
+          //                         children: [
+          //                           Text('Serviço ID: ${payment.serviceId}'),
+          //                           Text('Data: ${payment.createdAt.toLocal().toString().split('.')[0]}'),
+          //                         ],
+          //                       ),
+          //                       trailing: Column(
+          //                         mainAxisAlignment: MainAxisAlignment.center,
+          //                         crossAxisAlignment: CrossAxisAlignment.end,
+          //                         children: [
+          //                           Text(
+          //                             'R\$ ${payment.amount.toStringAsFixed(2)}',
+          //                             style: GoogleFonts.poppins(
+          //                               fontWeight: FontWeight.bold,
+          //                             ),
+          //                           ),
+          //                           Text(
+          //                             'Comissão: R\$ ${payment.commissionAmount.toStringAsFixed(2)}',
+          //                             style: GoogleFonts.poppins(
+          //                               fontSize: 12,
+          //                               color: Colors.grey[600],
+          //                             ),
+          //                           ),
+          //                         ],
+          //                       ),
+          //                     );
+          //                   },
+          //                 ),
+          //         ),
+          //       ],
+          //     );
+          //   },
+          // ),
         ],
       ),
     );
@@ -495,7 +509,8 @@ class AdminPanicAlertsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firestoreService = FirestoreService();
+    // MVP: Firestore desabilitado
+    // final firestoreService = FirestoreService();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -510,126 +525,139 @@ class AdminPanicAlertsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          StreamBuilder<List<PanicAlert>>(
-            stream: firestoreService.getPanicAlerts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (snapshot.hasError) {
-                return Center(child: Text('Erro: ${snapshot.error}'));
-              }
-
-              final alerts = snapshot.data ?? [];
-              final activeAlerts = alerts.where((alert) => 
-                alert.status == PanicStatus.triggered || 
-                alert.status == PanicStatus.acknowledged
-              ).toList();
-
-              return Column(
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: Column(
                 children: [
-                  Card(
-                    color: Colors.red[50],
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.warning, color: Colors.red, size: 32),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Alertas Ativos',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text('${activeAlerts.length} alertas precisam de atenção'),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              '${activeAlerts.length}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Histórico de Alertas',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Card(
-                    child: alerts.isEmpty
-                        ? const Padding(
-                            padding: EdgeInsets.all(32.0),
-                            child: Text('Nenhum alerta encontrado'),
-                          )
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: alerts.length,
-                            itemBuilder: (context, index) {
-                              final alert = alerts[index];
-                              final statusColor = _getStatusColor(alert.status);
-                              final statusIcon = _getStatusIcon(alert.status);
-                              final statusText = _getStatusText(alert.status);
-
-                              return ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: statusColor,
-                                  child: Icon(
-                                    statusIcon,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                title: Text('Alerta #${alert.id.substring(0, 8)}'),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Usuário ID: ${alert.userId}'),
-                                    if (alert.address != null) 
-                                      Text('Localização: ${alert.address}'),
-                                    if (alert.latitude != null && alert.longitude != null)
-                                      Text('GPS: ${alert.latitude!.toStringAsFixed(6)}, ${alert.longitude!.toStringAsFixed(6)}'),
-                                    Text('Horário: ${alert.triggeredAt.toLocal().toString().split('.')[0]}'),
-                                  ],
-                                ),
-                                trailing: Chip(
-                                  label: Text(statusText),
-                                  backgroundColor: statusColor,
-                                  labelStyle: const TextStyle(color: Colors.white),
-                                ),
-                              );
-                            },
-                          ),
-                  ),
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('MVP: Dados mockados - Firebase desabilitado'),
                 ],
-              );
-            },
+              ),
+            ),
           ),
+          // MVP: StreamBuilder desabilitado
+          // StreamBuilder<List<PanicAlert>>(
+          //   stream: firestoreService.getPanicAlerts(),
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return const Center(child: CircularProgressIndicator());
+          //     }
+
+          //     if (snapshot.hasError) {
+          //       return Center(child: Text('Erro: ${snapshot.error}'));
+          //     }
+
+          //     final alerts = snapshot.data ?? [];
+          //     final activeAlerts = alerts.where((alert) => 
+          //       alert.status == PanicStatus.triggered || 
+          //       alert.status == PanicStatus.acknowledged
+          //     ).toList();
+
+          //     return Column(
+          //       children: [
+          //         Card(
+          //           color: Colors.red[50],
+          //           child: Padding(
+          //             padding: const EdgeInsets.all(16.0),
+          //             child: Row(
+          //               children: [
+          //                 const Icon(Icons.warning, color: Colors.red, size: 32),
+          //                 const SizedBox(width: 16),
+          //                 Expanded(
+          //                   child: Column(
+          //                     crossAxisAlignment: CrossAxisAlignment.start,
+          //                     children: [
+          //                       Text(
+          //                         'Alertas Ativos',
+          //                         style: GoogleFonts.poppins(
+          //                           fontSize: 18,
+          //                           fontWeight: FontWeight.bold,
+          //                         ),
+          //                       ),
+          //                       const SizedBox(height: 4),
+          //                       Text('${activeAlerts.length} alertas precisam de atenção'),
+          //                     ],
+          //                   ),
+          //                 ),
+          //                 Container(
+          //                   padding: const EdgeInsets.all(12),
+          //                   decoration: BoxDecoration(
+          //                     color: Colors.red,
+          //                     borderRadius: BorderRadius.circular(8),
+          //                   ),
+          //                   child: Text(
+          //                     '${activeAlerts.length}',
+          //                     style: const TextStyle(
+          //                       color: Colors.white,
+          //                       fontSize: 24,
+          //                       fontWeight: FontWeight.bold,
+          //                     ),
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //           ),
+          //         ),
+          //         const SizedBox(height: 24),
+          //         Text(
+          //           'Histórico de Alertas',
+          //           style: GoogleFonts.poppins(
+          //             fontSize: 20,
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //         const SizedBox(height: 16),
+          //         Card(
+          //           child: alerts.isEmpty
+          //               ? const Padding(
+          //                   padding: EdgeInsets.all(32.0),
+          //                   child: Text('Nenhum alerta encontrado'),
+          //                 )
+          //               : ListView.builder(
+          //                   shrinkWrap: true,
+          //                   physics: const NeverScrollableScrollPhysics(),
+          //                   itemCount: alerts.length,
+          //                   itemBuilder: (context, index) {
+          //                     final alert = alerts[index];
+          //                     final statusColor = _getStatusColor(alert.status);
+          //                     final statusIcon = _getStatusIcon(alert.status);
+          //                     final statusText = _getStatusText(alert.status);
+
+          //                     return ListTile(
+          //                       leading: CircleAvatar(
+          //                         backgroundColor: statusColor,
+          //                         child: Icon(
+          //                           statusIcon,
+          //                           color: Colors.white,
+          //                         ),
+          //                       ),
+          //                       title: Text('Alerta #${alert.id.substring(0, 8)}'),
+          //                       subtitle: Column(
+          //                         crossAxisAlignment: CrossAxisAlignment.start,
+          //                         children: [
+          //                           Text('Usuário ID: ${alert.userId}'),
+          //                           if (alert.address != null) 
+          //                             Text('Localização: ${alert.address}'),
+          //                           if (alert.latitude != null && alert.longitude != null)
+          //                             Text('GPS: ${alert.latitude!.toStringAsFixed(6)}, ${alert.longitude!.toStringAsFixed(6)}'),
+          //                           Text('Horário: ${alert.triggeredAt.toLocal().toString().split('.')[0]}'),
+          //                         ],
+          //                       ),
+          //                       trailing: Chip(
+          //                         label: Text(statusText),
+          //                         backgroundColor: statusColor,
+          //                         labelStyle: const TextStyle(color: Colors.white),
+          //                       ),
+          //                     );
+          //                   },
+          //                 ),
+          //         ),
+          //       ],
+          //     );
+          //   },
+          // ),
         ],
       ),
     );

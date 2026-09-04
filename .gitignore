@@ -45,3 +45,11 @@ app.*.map.json
 
 # Windows build artifacts
 /windows/flutter/ephemeral
+
+# Firebase service account (NEVER commit this)
+scripts/service-account.json
+**/service-account.json
+
+# Node modules
+scripts/node_modules/
+scripts/package-lock.json

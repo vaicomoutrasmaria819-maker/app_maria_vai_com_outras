@@ -20,6 +20,7 @@ class Payment extends Equatable {
   final String serviceId;
   final double amount;
   final double commissionAmount;
+  final double providerAmount;
   final PaymentStatus status;
   final PaymentMethod method;
   final DateTime createdAt;
@@ -33,6 +34,7 @@ class Payment extends Equatable {
     required this.serviceId,
     required this.amount,
     required this.commissionAmount,
+    required this.providerAmount,
     required this.status,
     required this.method,
     required this.createdAt,
@@ -48,6 +50,7 @@ class Payment extends Equatable {
         serviceId,
         amount,
         commissionAmount,
+        providerAmount,
         status,
         method,
         createdAt,

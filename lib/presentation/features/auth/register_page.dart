@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mariavai_services/core/firebase/auth_service.dart';
-import 'package:mariavai_services/core/firebase/firestore_service.dart';
+// import 'package:mariavai_services/core/firebase/auth_service.dart';
+// import 'package:mariavai_services/core/firebase/firestore_service.dart';
 import 'package:mariavai_services/domain/entities/user.dart' as domain;
 
 /// Tela de cadastro compartilhada para os três papéis do app (cliente,
@@ -27,7 +27,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final _confirmPasswordController = TextEditingController();
   final _accessCodeController = TextEditingController();
 
-  final _authService = AuthService();
+  // MVP: Firebase desabilitado
+  // final _authService = AuthService();
+  // final _firestoreService = FirestoreService();
 
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -75,41 +77,10 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      await _authService.registerWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        name: _nameController.text.trim(),
-        phone: _phoneController.text.trim(),
-        role: widget.role,
-        adminAccessCode: widget.role == domain.UserRole.admin
-            ? _accessCodeController.text.trim()
-            : null,
-      );
-
-      if (!mounted) return;
-
-      switch (widget.role) {
-        case domain.UserRole.client:
-          context.go('/client');
-          break;
-        case domain.UserRole.provider:
-          context.go('/provider');
-          break;
-        case domain.UserRole.admin:
-          context.go('/admin');
-          break;
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Erro ao criar conta: ${e.toString()}';
-        _isLoading = false;
-      });
+    // MVP: Navegação simplificada - apenas redireciona de volta para login
+    // Em produção, usar Firebase Authentication e Firestore
+    if (mounted) {
+      context.go('/login');
     }
   }
 

@@ -1,33 +1,37 @@
 import 'package:flutter/material.dart';
 
 /// Tema do app Maria Vai Com As Outras - Reformas para Mulheres
-/// Cores baseadas no logo:
-/// - Background: Rosa claro (#FADADD)
+/// Cores extraídas diretamente da logo (fundo rosa + silhuetas pretas):
+/// - Background: Rosa claro (#F0BFC5, medido pixel a pixel na logo)
 /// - Texto principal: Branco
 /// - Banner/Acento: Preto
 /// - Slogan: "Não vá sozinha, vá com as outras!"
 class AppTheme {
-  // Cores principais do logo
-  static const Color primaryPink = Color(0xFFFADADD); // Rosa claro do background
+// Cores principais do logo
+  static const Color primaryPink = Color(0xFFF0BFC5); // Rosa do background da logo
   static const Color primaryBlack = Color(0xFF000000); // Preto do banner
   static const Color primaryWhite = Color(0xFFFFFFFF); // Branco do texto
-  
-  // Cores secundárias
-  static const Color secondaryPink = Color(0xFFE8A0B8); // Rosa mais escuro para ações
-  static const Color accentPink = Color(0xFFFF69B4); // Rosa vibrante para destaques
-  
+
+  // Cores secundárias — mesma tonalidade da logo (não existe um "rosa vibrante"
+  // na logo original, que é só rosa + preto; estas são variações de
+  // luminosidade/saturação do mesmo tom, pra não destoar visualmente)
+  static const Color secondaryPink = Color(0xFFE3707E); // Rosa mais escuro para ações
+  static const Color accentPink = Color(0xFFFD98A4); // Rosa mais saturado para destaques
+
   // Cores de UI
   static const Color successGreen = Color(0xFF4CAF50);
   static const Color errorRed = Color(0xFFF44336);
   static const Color warningOrange = Color(0xFFFF9800);
   static const Color infoBlue = Color(0xFF2196F3);
-  
+
   // Slogan
-  static const String slogan = 'Não vá sozinha, vá com as outras!';
-  
+  static const String subtitle = 'Não vá sozinha, vá com as outras!';
+
   // Nome do app
-  static const String appName = 'Maria Vai Com As Outras';
-  static const String subtitle = 'Reformas para Mulheres';
+  static const String appName = 'Maria Vai';
+  static const String appName2 = 'Com As Outras';
+
+  static const String slogan = 'Reformas para Mulheres';
 
   static ThemeData get lightTheme {
     return ThemeData(
@@ -35,35 +39,35 @@ class AppTheme {
       colorScheme: ColorScheme.fromSeed(
         seedColor: primaryPink,
         primary: primaryBlack,
-        secondary: secondaryPink,
-        surface: primaryPink,
+        secondary: primaryBlack,
+        surface: primaryWhite,
         background: primaryPink,
         error: errorRed,
       ),
       scaffoldBackgroundColor: primaryPink,
-      
+
       // AppBar theme
-      appBarTheme: const AppBarTheme(
-        backgroundColor: primaryBlack,
-        foregroundColor: primaryWhite,
+      appBarTheme: AppBarTheme(
+        backgroundColor: primaryWhite,
+        foregroundColor: primaryBlack,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: primaryWhite,
+        titleTextStyle: const TextStyle(
+          color: primaryBlack,
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
       ),
-      
+
       // Card theme
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData(
         color: primaryWhite,
         elevation: 4,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
       ),
-      
+
       // Elevated button theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -76,7 +80,7 @@ class AppTheme {
           elevation: 2,
         ),
       ),
-      
+
       // Outlined button theme
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
@@ -88,7 +92,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Text button theme
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -96,7 +100,7 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
       ),
-      
+
       // Input decoration theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -123,13 +127,13 @@ class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
-      
+
       // Icon theme
       iconTheme: const IconThemeData(
         color: primaryBlack,
         size: 24,
       ),
-      
+
       // Text theme
       textTheme: const TextTheme(
         displayLarge: TextStyle(
@@ -205,14 +209,14 @@ class AppTheme {
           fontWeight: FontWeight.w500,
         ),
       ),
-      
+
       // Floating action button theme
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: primaryBlack,
         foregroundColor: primaryWhite,
         elevation: 4,
       ),
-      
+
       // Bottom navigation bar theme
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: primaryWhite,
@@ -221,7 +225,7 @@ class AppTheme {
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         elevation: 8,
       ),
-      
+
       // Chip theme
       chipTheme: ChipThemeData(
         backgroundColor: secondaryPink,
@@ -234,7 +238,7 @@ class AppTheme {
         secondaryLabelStyle: const TextStyle(color: primaryWhite),
         brightness: Brightness.light,
       ),
-      
+
       // Divider theme
       dividerTheme: const DividerThemeData(
         color: Colors.grey,
@@ -257,19 +261,19 @@ class AppTheme {
         error: errorRed,
       ),
       scaffoldBackgroundColor: const Color(0xFF121212),
-      
+
       appBarTheme: const AppBarTheme(
         backgroundColor: primaryBlack,
         foregroundColor: primaryWhite,
         elevation: 0,
         centerTitle: true,
       ),
-      
-      cardTheme: CardTheme(
-        color: const Color(0xFF1A1A1A),
+
+      cardTheme: const CardThemeData(
+        color: Color(0xFF1A1A1A),
         elevation: 4,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
       ),
     );

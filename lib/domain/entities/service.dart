@@ -23,7 +23,7 @@ class Service extends Equatable {
   final String? providerNotes;
   final List<String> photos;
   final bool isPaid;
-  final double commissionRate; // 20% default
+  final double commissionRate;
 
   const Service({
     required this.id,
