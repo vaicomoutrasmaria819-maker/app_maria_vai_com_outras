@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mariavai_services/core/theme/app_theme.dart';
+import 'package:mariavai_services/core/widgets/branding_logo_image.dart';
 // import 'package:mariavai_services/core/firebase/auth_service.dart';
 // import 'package:mariavai_services/core/firebase/firestore_service.dart';
 import 'package:mariavai_services/domain/entities/user.dart' as domain;
@@ -86,53 +88,88 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
-    
+
     // Responsive sizing
-    final iconSize = isMobile ? 48.0 : 64.0;
+    final logoSize = (isMobile ? screenWidth * 0.5 : 200.0).toDouble();
     final titleFontSize = isMobile ? 20.0 : 24.0;
+    final subtitleFontSize = isMobile ? 12.0 : 14.0;
     final padding = isMobile ? 16.0 : 24.0;
     final spacing = isMobile ? 12.0 : 16.0;
     final buttonPadding = isMobile ? 14.0 : 16.0;
     final inputPadding = isMobile ? 12.0 : 16.0;
 
     return Scaffold(
-      appBar: AppBar(title: Text(_title)),
+      backgroundColor: AppTheme.primaryPink,
+      appBar: AppBar(
+        title: Text(_title, style: TextStyle(fontSize: isMobile ? 18 : 20)),
+        backgroundColor: AppTheme.primaryWhite,
+        foregroundColor: AppTheme.primaryBlack,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(padding),
+            padding: EdgeInsets.symmetric(
+              horizontal: padding,
+              vertical: padding * 0.5,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(_icon, size: iconSize, color: primary),
-                  SizedBox(height: spacing),
+                  SizedBox(height: isMobile ? 10 : 20),
+                  BrandingLogoImage(size: logoSize),
+                  SizedBox(height: isMobile ? 16 : 24),
                   Text(
-                    _title,
+                    AppTheme.appName,
                     style: GoogleFonts.poppins(
                       fontSize: titleFontSize,
                       fontWeight: FontWeight.bold,
-                      color: primary,
+                      color: AppTheme.primaryBlack,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: spacing * 2),
+                  Text(
+                    AppTheme.appName2,
+                    style: GoogleFonts.poppins(
+                      fontSize: titleFontSize,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryBlack,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: isMobile ? 8 : 16),
+                  Text(
+                    _title,
+                    style: GoogleFonts.poppins(
+                      fontSize: isMobile ? 16.0 : 18.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[700],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: spacing * 1.5),
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
                       labelText: 'Nome completo',
                       prefixIcon: const Icon(Icons.person),
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: AppTheme.primaryWhite,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: inputPadding,
                         vertical: inputPadding,
                       ),
                     ),
-                    validator: (value) => (value == null || value.trim().isEmpty)
+                    validator: (value) =>
+                        (value == null || value.trim().isEmpty)
                         ? 'Informe seu nome'
                         : null,
                   ),
@@ -142,7 +179,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: InputDecoration(
                       labelText: 'Email',
                       prefixIcon: const Icon(Icons.email),
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: AppTheme.primaryWhite,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: inputPadding,
                         vertical: inputPadding,
@@ -165,14 +206,19 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: InputDecoration(
                       labelText: 'Telefone (com DDD)',
                       prefixIcon: const Icon(Icons.phone),
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: AppTheme.primaryWhite,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: inputPadding,
                         vertical: inputPadding,
                       ),
                     ),
                     keyboardType: TextInputType.phone,
-                    validator: (value) => (value == null || value.trim().isEmpty)
+                    validator: (value) =>
+                        (value == null || value.trim().isEmpty)
                         ? 'Informe seu telefone'
                         : null,
                   ),
@@ -183,17 +229,24 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: InputDecoration(
                       labelText: 'Senha',
                       prefixIcon: const Icon(Icons.lock),
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: AppTheme.primaryWhite,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: inputPadding,
                         vertical: inputPadding,
                       ),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
                         onPressed: () => setState(
-                            () => _obscurePassword = !_obscurePassword),
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -213,17 +266,25 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: InputDecoration(
                       labelText: 'Confirmar senha',
                       prefixIcon: const Icon(Icons.lock_outline),
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: AppTheme.primaryWhite,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: inputPadding,
                         vertical: inputPadding,
                       ),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscureConfirmPassword
-                            ? Icons.visibility_off
-                            : Icons.visibility),
-                        onPressed: () => setState(() =>
-                            _obscureConfirmPassword = !_obscureConfirmPassword),
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -240,13 +301,18 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: InputDecoration(
                         labelText: 'Código de acesso administrativo',
                         prefixIcon: const Icon(Icons.vpn_key),
-                        border: const OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: AppTheme.primaryWhite,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: inputPadding,
                           vertical: inputPadding,
                         ),
                       ),
-                      validator: (value) => (value == null || value.trim().isEmpty)
+                      validator: (value) =>
+                          (value == null || value.trim().isEmpty)
                           ? 'Informe o código de acesso'
                           : null,
                     ),
@@ -264,8 +330,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: _isLoading ? null : _handleRegister,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: buttonPadding),
-                      backgroundColor: primary,
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppTheme.primaryBlack,
+                      foregroundColor: AppTheme.primaryWhite,
                     ),
                     child: _isLoading
                         ? SizedBox(
@@ -276,12 +342,18 @@ class _RegisterPageState extends State<RegisterPage> {
                               strokeWidth: 2,
                             ),
                           )
-                        : Text('Criar conta', style: TextStyle(fontSize: isMobile ? 14 : 16)),
+                        : Text(
+                            'Criar conta',
+                            style: TextStyle(fontSize: isMobile ? 14 : 16),
+                          ),
                   ),
                   SizedBox(height: spacing),
                   TextButton(
                     onPressed: () => context.go('/login'),
-                    child: Text('Já tem conta? Entrar', style: TextStyle(fontSize: isMobile ? 14 : 16)),
+                    child: Text(
+                      'Já tem conta? Entrar',
+                      style: TextStyle(fontSize: isMobile ? 14 : 16),
+                    ),
                   ),
                 ],
               ),

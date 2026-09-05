@@ -36,7 +36,7 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
     String route = '/client';
     if (email.contains('admin')) {
       route = '/admin';
-    } else if (email.contains('prestadora') || email.contains('provider')) {
+    } else if (email.contains('prestadora') || email.contains('provider') || email == 'prestador@teste.com') {
       route = '/provider';
     }
 
@@ -195,7 +195,7 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
                   ),
                   SizedBox(height: isMobile ? 6 : 8),
                   OutlinedButton.icon(
-                    onPressed: () => context.push('/register'),
+                    onPressed: () => context.push('/register/client'),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(
                         vertical: isMobile ? 14 : 16,
@@ -205,7 +205,23 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
                     ),
                     icon: const Icon(Icons.person_add),
                     label: Text(
-                      'Cadastre-se',
+                      'Cadastrar como cliente',
+                      style: TextStyle(fontSize: isMobile ? 14 : 16),
+                    ),
+                  ),
+                  SizedBox(height: isMobile ? 6 : 8),
+                  OutlinedButton.icon(
+                    onPressed: () => context.push('/register/provider'),
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        vertical: isMobile ? 14 : 16,
+                      ),
+                      foregroundColor: AppTheme.primaryBlack,
+                      side: const BorderSide(color: AppTheme.primaryBlack),
+                    ),
+                    icon: const Icon(Icons.home_repair_service),
+                    label: Text(
+                      'Cadastrar como prestadora',
                       style: TextStyle(fontSize: isMobile ? 14 : 16),
                     ),
                   ),

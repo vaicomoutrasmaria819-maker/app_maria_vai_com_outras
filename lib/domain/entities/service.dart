@@ -1,11 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum ServiceStatus {
-  pending,
-  inProgress,
-  completed,
-  cancelled,
-}
+enum ServiceStatus { pending, inProgress, completed, cancelled, quotation }
 
 class Service extends Equatable {
   final String id;
@@ -34,6 +29,8 @@ class Service extends Equatable {
     required this.price,
     required this.status,
     required this.createdAt,
+    double? commissionAmount,
+    double? providerAmount,
     this.scheduledDate,
     this.completedAt,
     this.address,
@@ -49,21 +46,21 @@ class Service extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        clientId,
-        providerId,
-        title,
-        description,
-        price,
-        status,
-        createdAt,
-        scheduledDate,
-        completedAt,
-        address,
-        clientNotes,
-        providerNotes,
-        photos,
-        isPaid,
-        commissionRate,
-      ];
+    id,
+    clientId,
+    providerId,
+    title,
+    description,
+    price,
+    status,
+    createdAt,
+    scheduledDate,
+    completedAt,
+    address,
+    clientNotes,
+    providerNotes,
+    photos,
+    isPaid,
+    commissionRate,
+  ];
 }

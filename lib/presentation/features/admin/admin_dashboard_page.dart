@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mariavai_services/core/theme/app_theme.dart';
 // import 'package:mariavai_services/core/firebase/firestore_service.dart';
 import 'package:mariavai_services/domain/entities/payment.dart';
 import 'package:mariavai_services/domain/entities/panic_alert.dart';
@@ -19,6 +20,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     const AdminOverviewPage(),
     const AdminPaymentsPage(),
     const AdminUsersPage(),
+    const AdminRatingsPage(),
     const AdminPanicAlertsPage(),
   ];
 
@@ -57,6 +59,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: 'Usuários',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star),
+            label: 'Avaliações',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.warning),
@@ -582,6 +588,27 @@ class _UsersList extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class AdminRatingsPage extends StatelessWidget {
+  const AdminRatingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton.icon(
+        onPressed: () {
+          context.push('/ratings?isAdminView=true');
+        },
+        icon: const Icon(Icons.star),
+        label: const Text('Ver Todas as Avaliações'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primaryBlack,
+          foregroundColor: AppTheme.primaryWhite,
+        ),
+      ),
     );
   }
 }
