@@ -23,9 +23,6 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).brightness == Brightness.dark
@@ -73,18 +70,13 @@ class _ClientHomePageState extends State<ClientHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showNewServiceDialog(context),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: Text(
-          'Novo Serviço',
-          style: TextStyle(fontSize: isMobile ? 12 : 14),
-        ),
-      ),
+      // O floatingActionButton global foi removido daqui para não aparecer em todas as abas.
     );
   }
+}
+
+class ClientServicesPage extends StatelessWidget {
+  const ClientServicesPage({super.key});
 
   void _showNewServiceDialog(BuildContext context) {
     showDialog(
@@ -103,84 +95,108 @@ class _ClientHomePageState extends State<ClientHomePage> {
       ),
     );
   }
-}
-
-class ClientServicesPage extends StatelessWidget {
-  const ClientServicesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
 
-    // Responsive sizing
+    // Sizing responsivo
     final crossAxisCount = isMobile ? 2 : 3;
     final padding = isMobile ? 12.0 : 16.0;
     final spacing = isMobile ? 16.0 : 24.0;
     final titleFontSize = isMobile ? 20.0 : 24.0;
 
-    return Padding(
-      padding: EdgeInsets.all(padding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Serviços',
-            style: GoogleFonts.poppins(
-              fontSize: titleFontSize,
-              fontWeight: FontWeight.bold,
-            ),
+    // Adicionado Scaffold interno com fundo transparente para conter o FAB apenas nesta tela
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showNewServiceDialog(context),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1A1A1A)
+            : AppTheme.primaryWhite,
+        foregroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1A1A1A)
+            : AppTheme.primaryWhite,
+        icon: Icon(
+          Icons.add,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? AppTheme.primaryWhite
+              : const Color(0xFF1A1A1A),
+        ),
+        label: Text(
+          'Novo Serviço',
+          style: TextStyle(
+            fontSize: isMobile ? 12 : 14,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppTheme.primaryWhite
+                : const Color(0xFF1A1A1A),
           ),
-          SizedBox(height: spacing),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: spacing,
-              mainAxisSpacing: spacing,
-              children: [
-                _ServiceCategoryCard(
-                  icon: Icons.plumbing,
-                  title: 'Hidráulica',
-                  color: Colors.blue,
-                  isMobile: isMobile,
-                ),
-                _ServiceCategoryCard(
-                  icon: Icons.electrical_services,
-                  title: 'Elétrica',
-                  color: Colors.orange,
-                  isMobile: isMobile,
-                ),
-                _ServiceCategoryCard(
-                  icon: Icons.construction,
-                  title: 'Projetos e consultorias',
-                  color: Colors.brown,
-                  isMobile: isMobile,
-                ),
-                _ServiceCategoryCard(
-                  icon: Icons.layers,
-                  title: 'Revestimento',
-                  color: Colors.grey,
-                  isMobile: isMobile,
-                ),
-                _ServiceCategoryCard(
-                  icon: Icons.cleaning_services,
-                  title: 'Organização e limpeza',
-                  color: Colors.teal,
-                  isMobile: isMobile,
-                ),
-                _ServiceCategoryCard(
-                  icon: Icons.chat,
-                  title: 'Chat Suporte',
-                  color: Colors.purple,
-                  onTap: () => context.push(
-                    '/chat?currentUserId=client_1&otherUserId=provider_1&otherUserName=Ana Costa',
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(padding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Serviços',
+              style: GoogleFonts.poppins(
+                fontSize: titleFontSize,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: spacing),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: spacing,
+                mainAxisSpacing: spacing,
+                children: [
+                  _ServiceCategoryCard(
+                    icon: Icons.plumbing,
+                    title: 'Hidráulica',
+                    color: Colors.blue,
+                    isMobile: isMobile,
                   ),
-                  isMobile: isMobile,
-                ),
-              ],
+                  _ServiceCategoryCard(
+                    icon: Icons.electrical_services,
+                    title: 'Elétrica',
+                    color: Colors.orange,
+                    isMobile: isMobile,
+                  ),
+                  _ServiceCategoryCard(
+                    icon: Icons.construction,
+                    title: 'Projetos e consultorias',
+                    color: Colors.brown,
+                    isMobile: isMobile,
+                  ),
+                  _ServiceCategoryCard(
+                    icon: Icons.layers,
+                    title: 'Revestimentos',
+                    color: Colors.grey,
+                    isMobile: isMobile,
+                  ),
+                  _ServiceCategoryCard(
+                    icon: Icons.cleaning_services,
+                    title: 'Organização e limpeza',
+                    color: Colors.teal,
+                    isMobile: isMobile,
+                  ),
+                  _ServiceCategoryCard(
+                    icon: Icons.chat,
+                    title: 'Chat e Suporte',
+                    color: Colors.purple,
+                    onTap: () => context.push(
+                      '/chat?currentUserId=client_1&otherUserId=provider_1&otherUserName=Ana Costa',
+                    ),
+                    isMobile: isMobile,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -249,7 +265,6 @@ class ClientOrdersPage extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
 
-    // Responsive sizing
     final padding = isMobile ? 12.0 : 16.0;
     final spacing = isMobile ? 12.0 : 16.0;
     final titleFontSize = isMobile ? 20.0 : 24.0;
@@ -302,7 +317,10 @@ class ClientOrdersPage extends StatelessWidget {
                             ),
                             onPressed: () {
                               context.push(
-                                '/create-rating?serviceId=service_${index + 1}&providerId=provider_1&providerName=Ana Costa&serviceTitle=Serviço #${index + 1}',
+                                '/create-rating?serviceId=service${index + 1}'
+                                '&providerId=provider_1'
+                                '&providerName=Ana Costa'
+                                '&serviceTitle=Serviço #${index + 1}',
                               );
                             },
                             tooltip: 'Avaliar serviço',
@@ -343,7 +361,6 @@ class ClientQuotationsPage extends StatefulWidget {
 }
 
 class _ClientQuotationsPageState extends State<ClientQuotationsPage> {
-  // Mock data for quotations
   final List<Map<String, dynamic>> _quotations = [
     {
       'id': '1',
@@ -368,8 +385,7 @@ class _ClientQuotationsPageState extends State<ClientQuotationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
+    final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Padding(
       padding: EdgeInsets.all(isMobile ? 12 : 16),
@@ -524,6 +540,9 @@ class _QuotationCard extends StatelessWidget {
     final fontSize = isMobile ? 14.0 : 16.0;
     final smallFontSize = isMobile ? 12.0 : 14.0;
 
+    final value = quotation['quotationValue'] ?? quotation['estimatedValue'];
+    final formattedValue = value is num ? value.toStringAsFixed(2) : '$value';
+
     return Card(
       margin: EdgeInsets.only(bottom: isMobile ? 8.0 : 12.0),
       child: Padding(
@@ -536,7 +555,7 @@ class _QuotationCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    quotation['title'],
+                    quotation['title']?.toString() ?? '',
                     style: TextStyle(
                       fontSize: fontSize,
                       fontWeight: FontWeight.bold,
@@ -571,7 +590,7 @@ class _QuotationCard extends StatelessWidget {
             ),
             SizedBox(height: isMobile ? 4 : 6),
             Text(
-              quotation['description'],
+              quotation['description']?.toString() ?? '',
               style: TextStyle(
                 fontSize: smallFontSize,
                 color: Colors.grey[600],
@@ -589,7 +608,7 @@ class _QuotationCard extends StatelessWidget {
                 ),
                 SizedBox(width: isMobile ? 4 : 8),
                 Text(
-                  'Valor: R\$ ${quotation['quotationValue']?.toStringAsFixed(2) ?? quotation['estimatedValue'].toStringAsFixed(2)}',
+                  'Valor: R\$ $formattedValue',
                   style: TextStyle(
                     fontSize: smallFontSize,
                     fontWeight: FontWeight.bold,
@@ -652,10 +671,7 @@ class ClientProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
-    // Responsive sizing
+    final isMobile = MediaQuery.of(context).size.width < 600;
     final padding = isMobile ? 12.0 : 16.0;
     final spacing = isMobile ? 16.0 : 32.0;
     final avatarRadius = isMobile ? 40.0 : 50.0;
@@ -702,8 +718,21 @@ class ClientProfilePage extends StatelessWidget {
                 style: TextStyle(fontSize: isMobile ? 14 : 16),
               ),
               trailing: const Icon(Icons.chevron_right),
+              onTap: () {},
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.star),
+              title: Text(
+                'Avaliações',
+                style: TextStyle(fontSize: isMobile ? 14 : 16),
+              ),
+              trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                // TODO: Navigate to settings
+                context.push(
+                  '/ratings?providerId=provider_1&providerName=Ana Costa',
+                );
               },
             ),
           ),
@@ -715,9 +744,7 @@ class ClientProfilePage extends StatelessWidget {
                 style: TextStyle(fontSize: isMobile ? 14 : 16),
               ),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // TODO: Navigate to settings
-              },
+              onTap: () {},
             ),
           ),
           Card(
@@ -728,9 +755,7 @@ class ClientProfilePage extends StatelessWidget {
                 style: TextStyle(fontSize: isMobile ? 14 : 16),
               ),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // TODO: Navigate to payment methods
-              },
+              onTap: () {},
             ),
           ),
           Card(
@@ -741,9 +766,7 @@ class ClientProfilePage extends StatelessWidget {
                 style: TextStyle(fontSize: isMobile ? 14 : 16),
               ),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // TODO: Navigate to emergency contacts
-              },
+              onTap: () {},
             ),
           ),
           Card(

@@ -325,7 +325,7 @@ class _RatingSummaryCard extends StatelessWidget {
                     ),
                     SizedBox(width: isMobile ? 8 : 12),
                     Text(
-                      '$count ($percentage.toStringAsFixed(0)%)',
+                      '$count ($percentage%)',
                       style: TextStyle(
                         fontSize: isMobile ? 12 : 14,
                         color: Theme.of(context).brightness == Brightness.dark

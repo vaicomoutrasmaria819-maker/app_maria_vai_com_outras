@@ -977,9 +977,22 @@ class ProviderProfilePage extends StatelessWidget {
           SizedBox(height: isMobile ? 16 : 32),
           Card(
             child: ListTile(
+              leading: const Icon(Icons.person_rounded),
+              title: Text(
+                'Conta',
+                style: TextStyle(fontSize: isMobile ? 14 : 16),
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                // TODO: Navigate to settings
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
               leading: const Icon(Icons.star),
               title: Text(
-                'Minhas Avaliações',
+                'Avaliações',
                 style: TextStyle(fontSize: isMobile ? 14 : 16),
               ),
               trailing: const Icon(Icons.chevron_right),
