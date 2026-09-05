@@ -214,6 +214,7 @@ class AppTheme {
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         elevation: 8,
+        type: BottomNavigationBarType.fixed,
       ),
 
       // Chip theme
@@ -265,6 +266,15 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
+      ),
+
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Color(0xFF1A1A1A),
+        selectedItemColor: primaryPink,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+        elevation: 8,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }

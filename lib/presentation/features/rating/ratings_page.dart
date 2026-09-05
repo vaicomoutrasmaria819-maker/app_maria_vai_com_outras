@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mariavai_services/core/theme/app_theme.dart';
 import 'package:mariavai_services/domain/entities/rating.dart';
+
+import '../../../core/theme/app_theme.dart';
 
 class RatingsPage extends StatefulWidget {
   final String? providerId;
@@ -79,7 +80,10 @@ class _RatingsPageState extends State<RatingsPage> {
 
   double get _averageRating {
     if (_ratings.isEmpty) return 0.0;
-    final sum = _ratings.fold<double>(0.0, (sum, rating) => sum + rating.rating);
+    final sum = _ratings.fold<double>(
+      0.0,
+      (sum, rating) => sum + rating.rating,
+    );
     return sum / _ratings.length;
   }
 
@@ -100,14 +104,14 @@ class _RatingsPageState extends State<RatingsPage> {
     final isMobile = screenWidth < 600;
 
     return Scaffold(
-      backgroundColor: AppTheme.primaryPink,
+      backgroundColor: const Color(0xFFF0BFC5),
       appBar: AppBar(
         title: Text(
           widget.isAdminView ? 'Avaliações do Sistema' : 'Minhas Avaliações',
           style: TextStyle(fontSize: isMobile ? 18 : 20),
         ),
-        backgroundColor: AppTheme.primaryWhite,
-        foregroundColor: AppTheme.primaryBlack,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
       ),
       body: SafeArea(
@@ -129,16 +133,19 @@ class _RatingsPageState extends State<RatingsPage> {
                 style: GoogleFonts.poppins(
                   fontSize: isMobile ? 20 : 24,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryBlack,
+                  color: Colors.black,
                 ),
               ),
               SizedBox(height: isMobile ? 12 : 16),
-              ..._ratings.map((rating) => _RatingCard(
-                rating: rating,
-                isMobile: isMobile,
-                canRespond: !widget.isAdminView,
-                onResponse: (response) => _respondToRating(rating.id, response),
-              )),
+              ..._ratings.map(
+                (rating) => _RatingCard(
+                  rating: rating,
+                  isMobile: isMobile,
+                  canRespond: !widget.isAdminView,
+                  onResponse: (response) =>
+                      _respondToRating(rating.id, response),
+                ),
+              ),
             ],
           ),
         ),
@@ -191,7 +198,9 @@ class _RatingSummaryCard extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: isMobile ? 18 : 20,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.primaryBlack,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppTheme.primaryWhite
+                    : const Color(0xFF1A1A1A),
               ),
             ),
             SizedBox(height: isMobile ? 12 : 16),
@@ -202,7 +211,9 @@ class _RatingSummaryCard extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: isMobile ? 36 : 48,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryBlack,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.primaryWhite
+                        : const Color(0xFF1A1A1A),
                   ),
                 ),
                 SizedBox(width: isMobile ? 8 : 12),
@@ -226,7 +237,9 @@ class _RatingSummaryCard extends StatelessWidget {
                       '$totalRatings avaliações',
                       style: TextStyle(
                         fontSize: isMobile ? 12 : 14,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.primaryWhite
+                            : const Color(0xFF1A1A1A),
                       ),
                     ),
                   ],
@@ -237,8 +250,10 @@ class _RatingSummaryCard extends StatelessWidget {
             ...ratingDistribution.entries.map((entry) {
               final stars = int.parse(entry.key);
               final count = entry.value;
-              final percentage = totalRatings > 0 ? (count / totalRatings) * 100 : 0.0;
-              
+              final percentage = totalRatings > 0
+                  ? (count / totalRatings) * 100
+                  : 0.0;
+
               return Padding(
                 padding: EdgeInsets.only(bottom: isMobile ? 6 : 8),
                 child: Row(
@@ -247,7 +262,9 @@ class _RatingSummaryCard extends StatelessWidget {
                       '$stars estrelas',
                       style: TextStyle(
                         fontSize: isMobile ? 12 : 14,
-                        color: Colors.grey[700],
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.primaryWhite
+                            : const Color(0xFF1A1A1A),
                       ),
                     ),
                     SizedBox(width: isMobile ? 8 : 12),
@@ -256,7 +273,11 @@ class _RatingSummaryCard extends StatelessWidget {
                         value: percentage / 100,
                         backgroundColor: Colors.grey[300],
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          stars >= 4 ? Colors.green : stars >= 3 ? Colors.amber : Colors.red,
+                          stars >= 4
+                              ? Colors.green
+                              : stars >= 3
+                              ? Colors.amber
+                              : Colors.red,
                         ),
                       ),
                     ),
@@ -265,7 +286,9 @@ class _RatingSummaryCard extends StatelessWidget {
                       '$count ($percentage.toStringAsFixed(0)%)',
                       style: TextStyle(
                         fontSize: isMobile ? 12 : 14,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.primaryWhite
+                            : const Color(0xFF1A1A1A),
                       ),
                     ),
                   ],
@@ -318,40 +341,53 @@ class _RatingCardState extends State<_RatingCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: widget.isMobile ? 16 : 20,
-                      backgroundColor: AppTheme.primaryPink,
-                      child: Icon(
-                        Icons.person,
-                        size: widget.isMobile ? 16 : 20,
-                        color: AppTheme.primaryBlack,
+                Expanded(
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: widget.isMobile ? 16 : 20,
+                        backgroundColor: const Color(0xFFF0BFC5),
+                        child: Icon(
+                          Icons.person,
+                          size: widget.isMobile ? 16 : 20,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.primaryWhite
+                              : const Color(0xFF1A1A1A),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: widget.isMobile ? 8 : 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.rating.clientName,
-                          style: TextStyle(
-                            fontSize: widget.isMobile ? 14 : 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      SizedBox(width: widget.isMobile ? 8 : 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.rating.clientName,
+                              style: TextStyle(
+                                fontSize: widget.isMobile ? 14 : 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                            Text(
+                              _formatDate(widget.rating.createdAt),
+                              style: TextStyle(
+                                fontSize: widget.isMobile ? 10 : 12,
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? AppTheme.primaryWhite
+                                    : const Color(0xFF1A1A1A),
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          _formatDate(widget.rating.createdAt),
-                          style: TextStyle(
-                            fontSize: widget.isMobile ? 10 : 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: List.generate(
                     5,
                     (index) => Icon(
@@ -366,23 +402,28 @@ class _RatingCardState extends State<_RatingCard> {
               ],
             ),
             SizedBox(height: widget.isMobile ? 8 : 12),
-            Row(
-              children: [
-                ...?widget.rating.categories?.map((category) => Padding(
-                  padding: EdgeInsets.only(right: widget.isMobile ? 4 : 8),
-                  child: Chip(
-                    label: Text(
-                      category,
-                      style: TextStyle(fontSize: widget.isMobile ? 10 : 12),
-                    ),
-                    backgroundColor: AppTheme.primaryPink,
-                    labelStyle: TextStyle(
-                      color: AppTheme.primaryBlack,
-                      fontSize: widget.isMobile ? 10 : 12,
-                    ),
-                  ),
-                )),
-              ],
+            Wrap(
+              spacing: widget.isMobile ? 4 : 8,
+              runSpacing: widget.isMobile ? 4 : 8,
+              children:
+                  widget.rating.categories
+                      ?.map(
+                        (category) => Chip(
+                          label: Text(
+                            category,
+                            style: TextStyle(
+                              fontSize: widget.isMobile ? 10 : 12,
+                            ),
+                          ),
+                          backgroundColor: const Color(0xFFF0BFC5),
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: widget.isMobile ? 10 : 12,
+                          ),
+                        ),
+                      )
+                      .toList() ??
+                  [],
             ),
             SizedBox(height: widget.isMobile ? 8 : 12),
             if (widget.rating.comment != null) ...[
@@ -390,7 +431,9 @@ class _RatingCardState extends State<_RatingCard> {
                 widget.rating.comment!,
                 style: TextStyle(
                   fontSize: widget.isMobile ? 12 : 14,
-                  color: Colors.grey[700],
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppTheme.primaryWhite
+                      : const Color(0xFF1A1A1A),
                 ),
                 maxLines: _isExpanded ? null : 2,
                 overflow: _isExpanded ? null : TextOverflow.ellipsis,
@@ -400,7 +443,9 @@ class _RatingCardState extends State<_RatingCard> {
                 child: Text(
                   _isExpanded ? 'Mostrar menos' : 'Mostrar mais',
                   style: TextStyle(
-                    color: AppTheme.primaryBlack,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.primaryWhite
+                        : const Color(0xFF1A1A1A),
                     fontSize: widget.isMobile ? 12 : 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -423,15 +468,21 @@ class _RatingCardState extends State<_RatingCard> {
                         Icon(
                           Icons.reply,
                           size: widget.isMobile ? 14 : 16,
-                          color: Colors.grey[600],
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.primaryWhite
+                              : const Color(0xFF1A1A1A),
                         ),
                         SizedBox(width: widget.isMobile ? 4 : 8),
-                        Text(
-                          'Resposta da prestadora',
-                          style: TextStyle(
-                            fontSize: widget.isMobile ? 12 : 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[700],
+                        Expanded(
+                          child: Text(
+                            'Resposta da prestadora',
+                            style: TextStyle(
+                              fontSize: widget.isMobile ? 12 : 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[700],
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                         ),
                       ],
@@ -452,11 +503,28 @@ class _RatingCardState extends State<_RatingCard> {
               SizedBox(height: widget.isMobile ? 12 : 16),
               ElevatedButton.icon(
                 onPressed: () => _showResponseDialog(context),
-                icon: Icon(Icons.reply, size: widget.isMobile ? 16 : 20),
-                label: Text('Responder', style: TextStyle(fontSize: widget.isMobile ? 12 : 14)),
+                icon: Icon(
+                  Icons.reply,
+                  size: widget.isMobile ? 16 : 20,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF1A1A1A)
+                      : AppTheme.primaryWhite,
+                ),
+                label: Text(
+                  'Responder',
+                  style: TextStyle(
+                    fontSize: widget.isMobile ? 12 : 14,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? const Color(0xFF1A1A1A)
+                        : AppTheme.primaryWhite,
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryBlack,
-                  foregroundColor: AppTheme.primaryWhite,
+                  backgroundColor:
+                      Theme.of(context).brightness == Brightness.dark
+                      ? AppTheme.primaryWhite
+                      : const Color(0xFF1A1A1A),
+                  foregroundColor: Colors.white,
                 ),
               ),
             ],

@@ -34,6 +34,7 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
     final email = _emailController.text.trim().toLowerCase();
 
     String route = '/client';
+    
     if (email.contains('admin')) {
       route = '/admin';
     } else if (email.contains('prestadora') || email.contains('provider') || email == 'prestador@teste.com') {

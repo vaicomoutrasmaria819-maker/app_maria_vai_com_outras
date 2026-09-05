@@ -44,6 +44,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         type: BottomNavigationBarType.fixed,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark 
+            ? const Color(0xFF1A1A1A) 
+            : AppTheme.primaryWhite,
+        selectedItemColor: Theme.of(context).brightness == Brightness.dark 
+            ? AppTheme.primaryPink 
+            : AppTheme.primaryBlack,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),

@@ -46,14 +46,14 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
     final isMobile = screenWidth < 600;
 
     return Scaffold(
-      backgroundColor: AppTheme.primaryPink,
+      backgroundColor: const Color(0xFFF0BFC5),
       appBar: AppBar(
         title: Text(
           'Avaliar Serviço',
           style: TextStyle(fontSize: isMobile ? 18 : 20),
         ),
-        backgroundColor: AppTheme.primaryWhite,
-        foregroundColor: AppTheme.primaryBlack,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
       ),
       body: SafeArea(
@@ -104,16 +104,20 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
                       SizedBox(height: isMobile ? 16 : 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                         children: List.generate(5, (index) {
-                          return IconButton(
-                            icon: Icon(
-                              index < _rating.round()
-                                  ? Icons.star
-                                  : Icons.star_border,
-                              color: Colors.amber,
-                              size: isMobile ? 32 : 48,
+                          return GestureDetector(
+                            onTap: () => setState(() => _rating = (index + 1).toDouble()),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: isMobile ? 4 : 8),
+                              child: Icon(
+                                index < _rating.round()
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                color: Colors.amber,
+                                size: isMobile ? 32 : 48,
+                              ),
                             ),
-                            onPressed: () => setState(() => _rating = (index + 1).toDouble()),
                           );
                         }),
                       ),
@@ -164,8 +168,8 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
                                 }
                               });
                             },
-                            selectedColor: AppTheme.primaryPink,
-                            checkmarkColor: AppTheme.primaryBlack,
+                            selectedColor: const Color(0xFFF0BFC5),
+                            checkmarkColor: Colors.black,
                           );
                         }).toList(),
                       ),
@@ -208,8 +212,8 @@ class _CreateRatingPageState extends State<CreateRatingPage> {
                   onPressed: _rating > 0 ? _submitRating : null,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: isMobile ? 16 : 20),
-                    backgroundColor: AppTheme.primaryBlack,
-                    foregroundColor: AppTheme.primaryWhite,
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
                   ),
                   child: Text(
                     'Enviar Avaliação',

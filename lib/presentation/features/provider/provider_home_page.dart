@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/theme/app_theme.dart';
+
 class ProviderHomePage extends StatefulWidget {
   const ProviderHomePage({super.key});
 
@@ -19,43 +21,6 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
     const ProviderProfilePage(),
   ];
 
-  // Mock data for quotations
-  final List<Map<String, dynamic>> _availableServices = [
-    {
-      'id': '1',
-      'title': 'Reparo de encanamento',
-      'client': 'Maria Silva',
-      'address': 'Rua das Flores, 123',
-      'description': 'Vazamento na cozinha precisa de reparo urgente',
-      'estimatedValue': 150.00,
-      'status': 'pending',
-      'date': '2024-01-15',
-    },
-    {
-      'id': '2',
-      'title': 'Instalação elétrica',
-      'client': 'Ana Costa',
-      'address': 'Av. Brasil, 456',
-      'description': 'Preciso instalar pontos de luz na sala',
-      'estimatedValue': 200.00,
-      'status': 'pending',
-      'date': '2024-01-16',
-    },
-  ];
-
-  final List<Map<String, dynamic>> _acceptedServices = [
-    {
-      'id': '3',
-      'title': 'Pintura de parede',
-      'client': 'Julia Santos',
-      'address': 'Rua São Paulo, 321',
-      'description': 'Pintura de sala e quartos',
-      'quotationValue': 450.00,
-      'status': 'accepted',
-      'date': '2024-01-10',
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -63,24 +28,22 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Maria Vai - Prestador',
-          style: TextStyle(fontSize: isMobile ? 18 : 20),
-        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.emergency),
-            onPressed: () => context.push('/panic'),
-            tooltip: 'Botão de Pânico',
-          ),
-        ],
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1A1A1A)
+            : AppTheme.primaryWhite,
+        selectedItemColor: Theme.of(context).brightness == Brightness.dark
+            ? AppTheme.primaryPink
+            : AppTheme.primaryBlack,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Trabalhos'),
           BottomNavigationBarItem(
@@ -340,15 +303,52 @@ class ProviderQuotationsPage extends StatefulWidget {
 }
 
 class _ProviderQuotationsPageState extends State<ProviderQuotationsPage> {
-  // Mock data will be accessed from parent
-  List<Map<String, dynamic>> get _availableServices =>
-      (context.findAncestorStateOfType<_ProviderHomePageState>())
-          ?._availableServices ??
-      [];
-  List<Map<String, dynamic>> get _acceptedServices =>
-      (context.findAncestorStateOfType<_ProviderHomePageState>())
-          ?._acceptedServices ??
-      [];
+  // Mock data local para evitar dependência do estado do pai
+  final List<Map<String, dynamic>> _availableServices = [
+    {
+      'id': '1',
+      'title': 'Reparo de encanamento',
+      'client': 'Maria Silva',
+      'address': 'Rua das Flores, 123',
+      'description': 'Vazamento na cozinha precisa de reparo urgente',
+      'estimatedValue': 150.00,
+      'status': 'pending',
+      'date': '2024-01-15',
+    },
+    {
+      'id': '2',
+      'title': 'Instalação elétrica',
+      "client": 'Ana Costa',
+      'address': 'Av. Brasil, 456',
+      'description': 'Preciso instalar pontos de luz na sala',
+      'estimatedValue': 200.00,
+      'status': 'pending',
+      'date': '2024-01-16',
+    },
+    {
+      'id': '3',
+      'title': 'Reforma de banheiro',
+      'client': 'Carla Oliveira',
+      'address': 'Rua Augusta, 789',
+      'description': 'Troca de azulejos e reparo geral',
+      'estimatedValue': 800.00,
+      'status': 'pending',
+      'date': '2024-01-18',
+    },
+  ];
+
+  final List<Map<String, dynamic>> _acceptedServices = [
+    {
+      'id': '4',
+      'title': 'Pintura de parede',
+      'client': 'Julia Santos',
+      'address': 'Rua São Paulo, 321',
+      'description': 'Pintura de sala e quartos',
+      'quotationValue': 450.00,
+      'status': 'accepted',
+      'date': '2024-01-10',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -419,11 +419,9 @@ class _ProviderQuotationsPageState extends State<ProviderQuotationsPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              final parentState = context
-                  .findAncestorStateOfType<_ProviderHomePageState>();
-              parentState?.setState(() {
-                parentState._availableServices.remove(service);
-                parentState._acceptedServices.add({
+              setState(() {
+                _availableServices.remove(service);
+                _acceptedServices.add({
                   ...service,
                   'status': 'accepted',
                   'quotationValue': service['estimatedValue'],
