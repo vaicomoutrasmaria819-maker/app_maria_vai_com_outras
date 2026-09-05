@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mariavai_services/core/theme/app_theme.dart';
-// import 'package:mariavai_services/core/firebase/firestore_service.dart';
-import 'package:mariavai_services/domain/entities/payment.dart';
 import 'package:mariavai_services/domain/entities/panic_alert.dart';
 
 class AdminDashboardPage extends StatefulWidget {
@@ -28,15 +26,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Maria Vai - Admin', style: TextStyle(fontSize: isMobile ? 18 : 20)),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: const Icon(Icons.emergency),
+            icon: const Icon(Icons.crisis_alert),
             onPressed: () => context.push('/panic'),
             tooltip: 'Botão de Pânico',
           ),
@@ -56,18 +53,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             icon: Icon(Icons.payments),
             label: 'Pagamentos',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Usuários',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            label: 'Avaliações',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.warning),
-            label: 'Alertas',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Usuários'),
+          BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Avaliações'),
+          BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Alertas'),
         ],
       ),
     );
@@ -81,13 +69,13 @@ class AdminOverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
-    
+
     // Responsive sizing
     final padding = isMobile ? 12.0 : 16.0;
     final spacing = isMobile ? 16.0 : 24.0;
     final titleFontSize = isMobile ? 24.0 : 28.0;
     final subtitleFontSize = isMobile ? 18.0 : 20.0;
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(padding),
       child: Column(
@@ -200,25 +188,42 @@ class AdminOverviewPage extends StatelessWidget {
                 return ListTile(
                   leading: CircleAvatar(
                     radius: isMobile ? 20 : 24,
-                    child: Icon(Icons.cleaning_services, size: isMobile ? 20 : 24),
+                    child: Icon(
+                      Icons.cleaning_services,
+                      size: isMobile ? 20 : 24,
+                    ),
                   ),
-                  title: Text('Serviço #${1000 + index}', style: TextStyle(fontSize: isMobile ? 14 : 16)),
-                  subtitle: Text('Cliente: Maria Silva | Prestador: Ana Costa', style: TextStyle(fontSize: isMobile ? 12 : 14)),
+                  title: Text(
+                    'Serviço #${1000 + index}',
+                    style: TextStyle(fontSize: isMobile ? 14 : 16),
+                  ),
+                  subtitle: Text(
+                    'Cliente: Maria Silva | Prestador: Ana Costa',
+                    style: TextStyle(fontSize: isMobile ? 12 : 14),
+                  ),
                   trailing: isMobile
                       ? Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: index < 2 ? Colors.green : Colors.blue,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             index < 2 ? 'Concluído' : 'Em andamento',
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                            ),
                           ),
                         )
                       : Chip(
                           label: Text(index < 2 ? 'Concluído' : 'Em andamento'),
-                          backgroundColor: index < 2 ? Colors.green : Colors.blue,
+                          backgroundColor: index < 2
+                              ? Colors.green
+                              : Colors.blue,
                           labelStyle: const TextStyle(color: Colors.white),
                         ),
                 );
@@ -253,7 +258,7 @@ class _StatCard extends StatelessWidget {
     final titleFontSize = isMobile ? 12.0 : 14.0;
     final valueFontSize = isMobile ? 20.0 : 24.0;
     final spacing = isMobile ? 6.0 : 8.0;
-    
+
     return Card(
       elevation: 4,
       child: Padding(
@@ -338,7 +343,7 @@ class AdminPaymentsPage extends StatelessWidget {
           //     }
 
           //     final payments = snapshot.data ?? [];
-              
+
           //     // Calcular totais
           //     double totalProcessed = 0;
           //     double totalCommission = 0;
@@ -541,14 +546,14 @@ class _UsersList extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
-    
+
     // Responsive sizing
     final padding = isMobile ? 12.0 : 16.0;
     final cardMargin = isMobile ? 8.0 : 12.0;
     final avatarRadius = isMobile ? 20.0 : 24.0;
     final titleFontSize = isMobile ? 14.0 : 16.0;
     final subtitleFontSize = isMobile ? 12.0 : 14.0;
-    
+
     return ListView.builder(
       padding: EdgeInsets.all(padding),
       itemCount: 5,
@@ -560,12 +565,21 @@ class _UsersList extends StatelessWidget {
               radius: avatarRadius,
               child: Icon(Icons.person, size: isMobile ? 20 : 24),
             ),
-            title: Text('$userType ${index + 1}', style: TextStyle(fontSize: titleFontSize)),
+            title: Text(
+              '$userType ${index + 1}',
+              style: TextStyle(fontSize: titleFontSize),
+            ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Email: user${index + 1}@email.com', style: TextStyle(fontSize: subtitleFontSize)),
-                Text('Telefone: (11) 99999-${1000 + index}', style: TextStyle(fontSize: subtitleFontSize)),
+                Text(
+                  'Email: user${index + 1}@email.com',
+                  style: TextStyle(fontSize: subtitleFontSize),
+                ),
+                Text(
+                  'Telefone: (11) 99999-${1000 + index}',
+                  style: TextStyle(fontSize: subtitleFontSize),
+                ),
               ],
             ),
             trailing: Row(
@@ -578,7 +592,11 @@ class _UsersList extends StatelessWidget {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red, size: isMobile ? 20 : 24),
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                    size: isMobile ? 20 : 24,
+                  ),
                   onPressed: () {
                     // TODO: Delete user
                   },
@@ -659,8 +677,8 @@ class AdminPanicAlertsPage extends StatelessWidget {
           //     }
 
           //     final alerts = snapshot.data ?? [];
-          //     final activeAlerts = alerts.where((alert) => 
-          //       alert.status == PanicStatus.triggered || 
+          //     final activeAlerts = alerts.where((alert) =>
+          //       alert.status == PanicStatus.triggered ||
           //       alert.status == PanicStatus.acknowledged
           //     ).toList();
 
@@ -747,7 +765,7 @@ class AdminPanicAlertsPage extends StatelessWidget {
           //                         crossAxisAlignment: CrossAxisAlignment.start,
           //                         children: [
           //                           Text('Usuário ID: ${alert.userId}'),
-          //                           if (alert.address != null) 
+          //                           if (alert.address != null)
           //                             Text('Localização: ${alert.address}'),
           //                           if (alert.latitude != null && alert.longitude != null)
           //                             Text('GPS: ${alert.latitude!.toStringAsFixed(6)}, ${alert.longitude!.toStringAsFixed(6)}'),

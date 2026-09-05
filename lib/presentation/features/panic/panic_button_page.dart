@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:mariavai_services/core/firebase/firestore_service.dart';
 import 'package:mariavai_services/domain/entities/panic_alert.dart';
-import 'package:uuid/uuid.dart';
 
 class PanicButtonPage extends StatefulWidget {
   const PanicButtonPage({super.key});
@@ -227,10 +225,7 @@ class _PanicButtonPageState extends State<PanicButtonPage> {
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              Colors.red[600]!,
-                              Colors.red[800]!,
-                            ],
+                            colors: [Colors.red[600]!, Colors.red[800]!],
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -245,7 +240,7 @@ class _PanicButtonPageState extends State<PanicButtonPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.emergency,
+                                Icons.crisis_alert,
                                 size: 60,
                                 color: Colors.white,
                               ),
@@ -279,8 +274,12 @@ class _PanicButtonPageState extends State<PanicButtonPage> {
                             ),
                             const SizedBox(height: 8),
                             const Text('• Seu local será compartilhado'),
-                            const Text('• Contatos de emergência serão avisados'),
-                            const Text('• Serviços de emergência serão chamados'),
+                            const Text(
+                              '• Contatos de emergência serão avisados',
+                            ),
+                            const Text(
+                              '• Serviços de emergência serão chamados',
+                            ),
                           ],
                         ),
                       ),

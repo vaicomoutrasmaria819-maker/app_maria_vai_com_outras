@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mariavai_services/core/theme/app_theme.dart';
 
 class ClientHomePage extends StatefulWidget {
   const ClientHomePage({super.key});
@@ -26,15 +25,11 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Maria Vai - Cliente',
-          style: TextStyle(fontSize: isMobile ? 18 : 20),
-        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: const Icon(Icons.emergency),
+            icon: const Icon(Icons.crisis_alert),
             onPressed: () => context.push('/panic'),
             tooltip: 'Botão de Pânico',
           ),
@@ -96,7 +91,7 @@ class ClientServicesPage extends StatelessWidget {
     // Responsive sizing
     final crossAxisCount = isMobile ? 2 : 3;
     final padding = isMobile ? 12.0 : 16.0;
-    final spacing = isMobile ? 12.0 : 16.0;
+    final spacing = isMobile ? 16.0 : 24.0;
     final titleFontSize = isMobile ? 20.0 : 24.0;
 
     return Padding(
@@ -105,7 +100,7 @@ class ClientServicesPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Categorias de Serviços',
+            'Serviços',
             style: GoogleFonts.poppins(
               fontSize: titleFontSize,
               fontWeight: FontWeight.bold,
@@ -275,7 +270,11 @@ class ClientOrdersPage extends StatelessWidget {
                       children: [
                         if (_getStatus(index) == 'Concluído')
                           IconButton(
-                            icon: Icon(Icons.star, size: isMobile ? 20 : 24, color: Colors.amber),
+                            icon: Icon(
+                              Icons.star,
+                              size: isMobile ? 20 : 24,
+                              color: Colors.amber,
+                            ),
                             onPressed: () {
                               context.push(
                                 '/create-rating?serviceId=service_${index + 1}&providerId=provider_1&providerName=Ana Costa&serviceTitle=Serviço #${index + 1}',
@@ -408,6 +407,17 @@ class ClientProfilePage extends StatelessWidget {
               onTap: () {
                 // TODO: Navigate to emergency contacts
               },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.crisis_alert),
+              title: Text(
+                'Botão de Pânico',
+                style: TextStyle(fontSize: isMobile ? 14 : 16),
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/panic'),
             ),
           ),
           Card(
