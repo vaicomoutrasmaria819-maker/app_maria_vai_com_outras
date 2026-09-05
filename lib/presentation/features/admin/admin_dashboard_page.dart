@@ -24,9 +24,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Maria Vai - Admin'),
+        title: Text('Maria Vai - Admin', style: TextStyle(fontSize: isMobile ? 18 : 20)),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         actions: [
@@ -70,71 +73,118 @@ class AdminOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    
+    // Responsive sizing
+    final padding = isMobile ? 12.0 : 16.0;
+    final spacing = isMobile ? 16.0 : 24.0;
+    final titleFontSize = isMobile ? 24.0 : 28.0;
+    final subtitleFontSize = isMobile ? 18.0 : 20.0;
+    
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Visão Geral',
             style: GoogleFonts.poppins(
-              fontSize: 28,
+              fontSize: titleFontSize,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: _StatCard(
-                  title: 'Total de Usuários',
-                  value: '1,234',
-                  icon: Icons.people,
-                  color: Colors.blue,
+          SizedBox(height: spacing),
+          if (isMobile) ...[
+            _StatCard(
+              title: 'Total de Usuários',
+              value: '1,234',
+              icon: Icons.people,
+              color: Colors.blue,
+              isMobile: isMobile,
+            ),
+            SizedBox(height: spacing * 0.67),
+            _StatCard(
+              title: 'Serviços Ativos',
+              value: '89',
+              icon: Icons.work,
+              color: Colors.green,
+              isMobile: isMobile,
+            ),
+            SizedBox(height: spacing * 0.67),
+            _StatCard(
+              title: 'Receita Total',
+              value: 'R\$ 45.678',
+              icon: Icons.account_balance_wallet,
+              color: Colors.purple,
+              isMobile: isMobile,
+            ),
+            SizedBox(height: spacing * 0.67),
+            _StatCard(
+              title: 'Comissões',
+              value: 'R\$ 9.135',
+              icon: Icons.trending_up,
+              color: Colors.orange,
+              isMobile: isMobile,
+            ),
+          ] else ...[
+            Row(
+              children: [
+                Expanded(
+                  child: _StatCard(
+                    title: 'Total de Usuários',
+                    value: '1,234',
+                    icon: Icons.people,
+                    color: Colors.blue,
+                    isMobile: isMobile,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _StatCard(
-                  title: 'Serviços Ativos',
-                  value: '89',
-                  icon: Icons.work,
-                  color: Colors.green,
+                SizedBox(width: spacing * 0.67),
+                Expanded(
+                  child: _StatCard(
+                    title: 'Serviços Ativos',
+                    value: '89',
+                    icon: Icons.work,
+                    color: Colors.green,
+                    isMobile: isMobile,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _StatCard(
-                  title: 'Receita Total',
-                  value: 'R\$ 45.678',
-                  icon: Icons.account_balance_wallet,
-                  color: Colors.purple,
+              ],
+            ),
+            SizedBox(height: spacing * 0.67),
+            Row(
+              children: [
+                Expanded(
+                  child: _StatCard(
+                    title: 'Receita Total',
+                    value: 'R\$ 45.678',
+                    icon: Icons.account_balance_wallet,
+                    color: Colors.purple,
+                    isMobile: isMobile,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _StatCard(
-                  title: 'Comissões',
-                  value: 'R\$ 9.135',
-                  icon: Icons.trending_up,
-                  color: Colors.orange,
+                SizedBox(width: spacing * 0.67),
+                Expanded(
+                  child: _StatCard(
+                    title: 'Comissões',
+                    value: 'R\$ 9.135',
+                    icon: Icons.trending_up,
+                    color: Colors.orange,
+                    isMobile: isMobile,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
+              ],
+            ),
+          ],
+          SizedBox(height: spacing),
           Text(
             'Serviços Recentes',
             style: GoogleFonts.poppins(
-              fontSize: 20,
+              fontSize: subtitleFontSize,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: spacing * 0.67),
           Card(
             child: ListView.builder(
               shrinkWrap: true,
@@ -142,16 +192,29 @@ class AdminOverviewPage extends StatelessWidget {
               itemCount: 5,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.cleaning_services),
+                  leading: CircleAvatar(
+                    radius: isMobile ? 20 : 24,
+                    child: Icon(Icons.cleaning_services, size: isMobile ? 20 : 24),
                   ),
-                  title: Text('Serviço #${1000 + index}'),
-                  subtitle: Text('Cliente: Maria Silva | Prestador: Ana Costa'),
-                  trailing: Chip(
-                    label: Text(index < 2 ? 'Concluído' : 'Em andamento'),
-                    backgroundColor: index < 2 ? Colors.green : Colors.blue,
-                    labelStyle: const TextStyle(color: Colors.white),
-                  ),
+                  title: Text('Serviço #${1000 + index}', style: TextStyle(fontSize: isMobile ? 14 : 16)),
+                  subtitle: Text('Cliente: Maria Silva | Prestador: Ana Costa', style: TextStyle(fontSize: isMobile ? 12 : 14)),
+                  trailing: isMobile
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: index < 2 ? Colors.green : Colors.blue,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            index < 2 ? 'Concluído' : 'Em andamento',
+                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                          ),
+                        )
+                      : Chip(
+                          label: Text(index < 2 ? 'Concluído' : 'Em andamento'),
+                          backgroundColor: index < 2 ? Colors.green : Colors.blue,
+                          labelStyle: const TextStyle(color: Colors.white),
+                        ),
                 );
               },
             ),
@@ -167,43 +230,51 @@ class _StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
+  final bool isMobile;
 
   const _StatCard({
     required this.title,
     required this.value,
     required this.icon,
     required this.color,
+    this.isMobile = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final padding = isMobile ? 12.0 : 16.0;
+    final iconSize = isMobile ? 24.0 : 32.0;
+    final titleFontSize = isMobile ? 12.0 : 14.0;
+    final valueFontSize = isMobile ? 20.0 : 24.0;
+    final spacing = isMobile ? 6.0 : 8.0;
+    
     return Card(
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(padding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, color: color, size: 32),
-                const SizedBox(width: 8),
+                Icon(icon, color: color, size: iconSize),
+                SizedBox(width: spacing),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: spacing),
             Text(
               title,
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: titleFontSize,
                 color: Colors.grey[600],
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: spacing * 0.5),
             Text(
               value,
               style: GoogleFonts.poppins(
-                fontSize: 24,
+                fontSize: valueFontSize,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
@@ -462,35 +533,46 @@ class _UsersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    
+    // Responsive sizing
+    final padding = isMobile ? 12.0 : 16.0;
+    final cardMargin = isMobile ? 8.0 : 12.0;
+    final avatarRadius = isMobile ? 20.0 : 24.0;
+    final titleFontSize = isMobile ? 14.0 : 16.0;
+    final subtitleFontSize = isMobile ? 12.0 : 14.0;
+    
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(padding),
       itemCount: 5,
       itemBuilder: (context, index) {
         return Card(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: EdgeInsets.only(bottom: cardMargin),
           child: ListTile(
-            leading: const CircleAvatar(
-              child: Icon(Icons.person),
+            leading: CircleAvatar(
+              radius: avatarRadius,
+              child: Icon(Icons.person, size: isMobile ? 20 : 24),
             ),
-            title: Text('$userType ${index + 1}'),
+            title: Text('$userType ${index + 1}', style: TextStyle(fontSize: titleFontSize)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Email: user${index + 1}@email.com'),
-                Text('Telefone: (11) 99999-${1000 + index}'),
+                Text('Email: user${index + 1}@email.com', style: TextStyle(fontSize: subtitleFontSize)),
+                Text('Telefone: (11) 99999-${1000 + index}', style: TextStyle(fontSize: subtitleFontSize)),
               ],
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.edit),
+                  icon: Icon(Icons.edit, size: isMobile ? 20 : 24),
                   onPressed: () {
                     // TODO: Edit user
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                  icon: Icon(Icons.delete, color: Colors.red, size: isMobile ? 20 : 24),
                   onPressed: () {
                     // TODO: Delete user
                   },

@@ -47,14 +47,25 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+
+    // Responsive sizing - Forçando o 250 a ser double (.0) para sanar o erro de tipo 'num'
+    final logoSize = (isMobile ? screenWidth * 0.6 : 250.0).toDouble();
+    final titleFontSize = isMobile ? 22.0 : 28.0;
+    final subtitleFontSize = isMobile ? 12.0 : 14.0;
+    final sloganFontSize = isMobile ? 14.0 : 16.0;
+    final horizontalPadding = isMobile ? 16.0 : 24.0;
+    final verticalPadding = isMobile ? 16.0 : 32.0;
+
     return Scaffold(
       backgroundColor: AppTheme.primaryPink,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 32.0,
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: verticalPadding,
             ),
             child: Form(
               key: _formKey,
@@ -62,58 +73,38 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 20),
-                  const BrandingLogoImage(size: 250),
-                  const SizedBox(height: 32),
+                  SizedBox(height: isMobile ? 10 : 20),
+                  BrandingLogoImage(size: logoSize),
+                  SizedBox(height: isMobile ? 16 : 32),
                   Text(
                     AppTheme.appName,
                     style: GoogleFonts.poppins(
-                      fontSize: 28,
+                      fontSize: titleFontSize,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.surface,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   Text(
                     AppTheme.appName2,
                     style: GoogleFonts.poppins(
-                      fontSize: 28,
+                      fontSize: titleFontSize,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.surface,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryBlack,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      AppTheme.subtitle,
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.primaryWhite,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: isMobile ? 8 : 16),
                   Text(
-                    AppTheme.slogan,
+                    'Login',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.grey[700],
+                      fontSize: sloganFontSize,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.grey[600],
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: isMobile ? 16 : 32),
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -124,6 +115,10 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
                       ),
                       filled: true,
                       fillColor: AppTheme.primaryWhite,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: isMobile ? 12 : 16,
+                        vertical: isMobile ? 12 : 16,
+                      ),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -136,7 +131,7 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: isMobile ? 12 : 16),
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -147,9 +142,12 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
                       ),
                       filled: true,
                       fillColor: AppTheme.primaryWhite,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: isMobile ? 12 : 16,
+                        vertical: isMobile ? 12 : 16,
+                      ),
                     ),
                     obscureText: true,
-                    // MVP: Senha não é validada
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, insira sua senha';
@@ -157,50 +155,58 @@ class _LoginPageMVPState extends State<LoginPageMVP> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: isMobile ? 16 : 24),
                   ElevatedButton(
                     onPressed: _handleLogin,
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                        vertical: isMobile ? 14 : 16,
+                      ),
                       backgroundColor: AppTheme.primaryBlack,
                       foregroundColor: AppTheme.primaryWhite,
                     ),
-                    child: const Text('Entrar', style: TextStyle(fontSize: 16)),
+                    child: Text(
+                      'Entrar',
+                      style: TextStyle(fontSize: isMobile ? 14 : 16),
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
                       // TODO: Implement forgot password
                     },
-                    child: const Text('Esqueceu a senha?'),
+                    child: Text(
+                      'Esqueceu a senha?',
+                      style: TextStyle(
+                        fontSize: isMobile ? 14 : 16,
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: isMobile ? 4 : 8),
                   const Divider(),
-                  const SizedBox(height: 8),
+                  SizedBox(height: isMobile ? 4 : 8),
                   Text(
                     'Ainda não tem conta?',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey[700]),
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: isMobile ? 14 : 16,
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: isMobile ? 6 : 8),
                   OutlinedButton.icon(
-                    onPressed: () => context.push('/register/client'),
-                    icon: const Icon(Icons.person_add_alt_1_rounded),
-                    label: const Text('Cadastrar como cliente'),
-                  ),
-                  const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    onPressed: () => context.push('/register/provider'),
-                    icon: const Icon(Icons.home_repair_service_rounded),
-                    label: const Text('Cadastrar como prestadora'),
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: TextButton(
-                      onPressed: () => context.push('/register/admin'),
-                      child: Text(
-                        'Acesso administrativo',
-                        style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                    onPressed: () => context.push('/register'),
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        vertical: isMobile ? 14 : 16,
                       ),
+                      foregroundColor: AppTheme.primaryBlack,
+                      side: const BorderSide(color: AppTheme.primaryBlack),
+                    ),
+                    icon: const Icon(Icons.person_add),
+                    label: Text(
+                      'Cadastre-se',
+                      style: TextStyle(fontSize: isMobile ? 14 : 16),
                     ),
                   ),
                 ],

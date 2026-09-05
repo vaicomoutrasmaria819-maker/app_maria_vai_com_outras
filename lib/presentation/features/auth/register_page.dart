@@ -87,48 +87,66 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    
+    // Responsive sizing
+    final iconSize = isMobile ? 48.0 : 64.0;
+    final titleFontSize = isMobile ? 20.0 : 24.0;
+    final padding = isMobile ? 16.0 : 24.0;
+    final spacing = isMobile ? 12.0 : 16.0;
+    final buttonPadding = isMobile ? 14.0 : 16.0;
+    final inputPadding = isMobile ? 12.0 : 16.0;
 
     return Scaffold(
       appBar: AppBar(title: Text(_title)),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: EdgeInsets.all(padding),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(_icon, size: 64, color: primary),
-                  const SizedBox(height: 16),
+                  Icon(_icon, size: iconSize, color: primary),
+                  SizedBox(height: spacing),
                   Text(
                     _title,
                     style: GoogleFonts.poppins(
-                      fontSize: 24,
+                      fontSize: titleFontSize,
                       fontWeight: FontWeight.bold,
                       color: primary,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: spacing * 2),
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Nome completo',
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.person),
+                      border: const OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: inputPadding,
+                        vertical: inputPadding,
+                      ),
                     ),
                     validator: (value) => (value == null || value.trim().isEmpty)
                         ? 'Informe seu nome'
                         : null,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: spacing),
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.email),
+                      border: const OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: inputPadding,
+                        vertical: inputPadding,
+                      ),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -141,20 +159,24 @@ class _RegisterPageState extends State<RegisterPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: spacing),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Telefone (com DDD)',
-                      prefixIcon: Icon(Icons.phone),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.phone),
+                      border: const OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: inputPadding,
+                        vertical: inputPadding,
+                      ),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (value) => (value == null || value.trim().isEmpty)
                         ? 'Informe seu telefone'
                         : null,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: spacing),
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -162,6 +184,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: 'Senha',
                       prefixIcon: const Icon(Icons.lock),
                       border: const OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: inputPadding,
+                        vertical: inputPadding,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(_obscurePassword
                             ? Icons.visibility_off
@@ -180,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: spacing),
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: _obscureConfirmPassword,
@@ -188,6 +214,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: 'Confirmar senha',
                       prefixIcon: const Icon(Icons.lock_outline),
                       border: const OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: inputPadding,
+                        vertical: inputPadding,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(_obscureConfirmPassword
                             ? Icons.visibility_off
@@ -204,13 +234,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   if (widget.role == domain.UserRole.admin) ...[
-                    const SizedBox(height: 16),
+                    SizedBox(height: spacing),
                     TextFormField(
                       controller: _accessCodeController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Código de acesso administrativo',
-                        prefixIcon: Icon(Icons.vpn_key),
-                        border: OutlineInputBorder(),
+                        prefixIcon: const Icon(Icons.vpn_key),
+                        border: const OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: inputPadding,
+                          vertical: inputPadding,
+                        ),
                       ),
                       validator: (value) => (value == null || value.trim().isEmpty)
                           ? 'Informe o código de acesso'
@@ -218,23 +252,23 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ],
                   if (_errorMessage != null) ...[
-                    const SizedBox(height: 16),
+                    SizedBox(height: spacing),
                     Text(
                       _errorMessage!,
                       style: const TextStyle(color: Colors.red),
                       textAlign: TextAlign.center,
                     ),
                   ],
-                  const SizedBox(height: 24),
+                  SizedBox(height: spacing * 1.5),
                   ElevatedButton(
                     onPressed: _isLoading ? null : _handleRegister,
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: buttonPadding),
                       backgroundColor: primary,
                       foregroundColor: Colors.white,
                     ),
                     child: _isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
@@ -242,12 +276,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text('Criar conta', style: TextStyle(fontSize: 16)),
+                        : Text('Criar conta', style: TextStyle(fontSize: isMobile ? 14 : 16)),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: spacing),
                   TextButton(
                     onPressed: () => context.go('/login'),
-                    child: const Text('Já tem conta? Entrar'),
+                    child: Text('Já tem conta? Entrar', style: TextStyle(fontSize: isMobile ? 14 : 16)),
                   ),
                 ],
               ),

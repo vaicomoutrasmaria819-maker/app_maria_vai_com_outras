@@ -20,9 +20,12 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Maria Vai - Cliente'),
+        title: Text('Maria Vai - Cliente', style: TextStyle(fontSize: isMobile ? 18 : 20)),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         actions: [
@@ -57,7 +60,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
-        label: const Text('Novo Serviço'),
+        label: Text('Novo Serviço', style: TextStyle(fontSize: isMobile ? 12 : 14)),
       ),
     );
   }
@@ -84,49 +87,63 @@ class ClientServicesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    
+    // Responsive sizing
+    final crossAxisCount = isMobile ? 2 : 3;
+    final padding = isMobile ? 12.0 : 16.0;
+    final spacing = isMobile ? 12.0 : 16.0;
+    final titleFontSize = isMobile ? 20.0 : 24.0;
+    
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Categorias de Serviços',
             style: GoogleFonts.poppins(
-              fontSize: 24,
+              fontSize: titleFontSize,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: spacing),
           Expanded(
             child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: spacing,
+              mainAxisSpacing: spacing,
               children: [
                 _ServiceCategoryCard(
                   icon: Icons.plumbing,
                   title: 'Encanamento',
                   color: Colors.blue,
+                  isMobile: isMobile,
                 ),
                 _ServiceCategoryCard(
                   icon: Icons.electrical_services,
                   title: 'Elétrica',
                   color: Colors.orange,
+                  isMobile: isMobile,
                 ),
                 _ServiceCategoryCard(
                   icon: Icons.construction,
                   title: 'Alvenaria',
                   color: Colors.brown,
+                  isMobile: isMobile,
                 ),
                 _ServiceCategoryCard(
                   icon: Icons.layers,
                   title: 'Pisos',
                   color: Colors.grey,
+                  isMobile: isMobile,
                 ),
                 _ServiceCategoryCard(
                   icon: Icons.bathroom,
                   title: 'Banheiro',
                   color: Colors.teal,
+                  isMobile: isMobile,
                 ),
                 _ServiceCategoryCard(
                   icon: Icons.chat,
@@ -135,6 +152,7 @@ class ClientServicesPage extends StatelessWidget {
                   onTap: () => context.push(
                     '/chat?currentUserId=client_1&otherUserId=provider_1&otherUserName=Ana Costa',
                   ),
+                  isMobile: isMobile,
                 ),
               ],
             ),
@@ -150,16 +168,23 @@ class _ServiceCategoryCard extends StatelessWidget {
   final String title;
   final Color color;
   final VoidCallback? onTap;
+  final bool isMobile;
 
   const _ServiceCategoryCard({
     required this.icon,
     required this.title,
     required this.color,
     this.onTap,
+    this.isMobile = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final iconSize = isMobile ? 36.0 : 48.0;
+    final padding = isMobile ? 12.0 : 16.0;
+    final spacing = isMobile ? 8.0 : 12.0;
+    final fontSize = isMobile ? 14.0 : 16.0;
+    
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -171,20 +196,20 @@ class _ServiceCategoryCard extends StatelessWidget {
         },
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(padding),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 icon,
-                size: 48,
+                size: iconSize,
                 color: color,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: spacing),
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 16,
+                  fontSize: fontSize,
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
@@ -202,31 +227,41 @@ class ClientOrdersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    
+    // Responsive sizing
+    final padding = isMobile ? 12.0 : 16.0;
+    final spacing = isMobile ? 12.0 : 16.0;
+    final titleFontSize = isMobile ? 20.0 : 24.0;
+    final avatarRadius = isMobile ? 20.0 : 24.0;
+    
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Meus Pedidos',
             style: GoogleFonts.poppins(
-              fontSize: 24,
+              fontSize: titleFontSize,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: spacing),
           Expanded(
             child: ListView.builder(
               itemCount: 3,
               itemBuilder: (context, index) {
                 return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
+                  margin: EdgeInsets.only(bottom: spacing * 0.75),
                   child: ListTile(
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.cleaning_services),
+                    leading: CircleAvatar(
+                      radius: avatarRadius,
+                      child: Icon(Icons.cleaning_services, size: isMobile ? 20 : 24),
                     ),
-                    title: Text('Serviço #${index + 1}'),
-                    subtitle: Text('Status: ${_getStatus(index)}'),
+                    title: Text('Serviço #${index + 1}', style: TextStyle(fontSize: isMobile ? 14 : 16)),
+                    subtitle: Text('Status: ${_getStatus(index)}', style: TextStyle(fontSize: isMobile ? 12 : 14)),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       // TODO: Navigate to order details
@@ -258,41 +293,52 @@ class ClientProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    
+    // Responsive sizing
+    final padding = isMobile ? 12.0 : 16.0;
+    final spacing = isMobile ? 16.0 : 32.0;
+    final avatarRadius = isMobile ? 40.0 : 50.0;
+    final iconSize = isMobile ? 40.0 : 50.0;
+    final nameFontSize = isMobile ? 20.0 : 24.0;
+    final emailFontSize = isMobile ? 14.0 : 16.0;
+    
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: Column(
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  child: Icon(Icons.person, size: 50),
+                CircleAvatar(
+                  radius: avatarRadius,
+                  child: Icon(Icons.person, size: iconSize),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: spacing * 0.5),
                 Text(
                   'Maria Silva',
                   style: GoogleFonts.poppins(
-                    fontSize: 24,
+                    fontSize: nameFontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   'maria.silva@email.com',
                   style: GoogleFonts.poppins(
-                    fontSize: 16,
+                    fontSize: emailFontSize,
                     color: Colors.grey[600],
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: spacing),
           Card(
             child: ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text('Configurações'),
+              title: Text('Configurações', style: TextStyle(fontSize: isMobile ? 14 : 16)),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 // TODO: Navigate to settings
@@ -302,7 +348,7 @@ class ClientProfilePage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.payment),
-              title: const Text('Métodos de Pagamento'),
+              title: Text('Métodos de Pagamento', style: TextStyle(fontSize: isMobile ? 14 : 16)),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 // TODO: Navigate to payment methods
@@ -312,7 +358,7 @@ class ClientProfilePage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.contacts),
-              title: const Text('Contatos de Emergência'),
+              title: Text('Contatos de Emergência', style: TextStyle(fontSize: isMobile ? 14 : 16)),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 // TODO: Navigate to emergency contacts
@@ -322,7 +368,7 @@ class ClientProfilePage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Sair', style: TextStyle(color: Colors.red)),
+              title: Text('Sair', style: TextStyle(color: Colors.red, fontSize: isMobile ? 14 : 16)),
               onTap: () {
                 context.go('/login');
               },

@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 
 /// Tema do app Maria Vai Com As Outras - Reformas para Mulheres
-/// Cores extraídas diretamente da logo (fundo rosa + silhuetas pretas):
-/// - Background: Rosa claro (#F0BFC5, medido pixel a pixel na logo)
+/// Cores baseadas no logo:
+/// - Background: Rosa claro (#FADADD)
 /// - Texto principal: Branco
 /// - Banner/Acento: Preto
 /// - Slogan: "Não vá sozinha, vá com as outras!"
 class AppTheme {
-// Cores principais do logo
-  static const Color primaryPink = Color(0xFFF0BFC5); // Rosa do background da logo
+  // Cores principais do logo
+  static const Color primaryPink = Color(
+    0xFFF0BFC5,
+  ); // Rosa do background da logo
   static const Color primaryBlack = Color(0xFF000000); // Preto do banner
   static const Color primaryWhite = Color(0xFFFFFFFF); // Branco do texto
 
   // Cores secundárias — mesma tonalidade da logo (não existe um "rosa vibrante"
   // na logo original, que é só rosa + preto; estas são variações de
   // luminosidade/saturação do mesmo tom, pra não destoar visualmente)
-  static const Color secondaryPink = Color(0xFFE3707E); // Rosa mais escuro para ações
-  static const Color accentPink = Color(0xFFFD98A4); // Rosa mais saturado para destaques
+  static const Color secondaryPink = Color(
+    0xFFE3707E,
+  ); // Rosa mais escuro para ações
+  static const Color accentPink = Color(
+    0xFFFD98A4,
+  ); // Rosa mais saturado para destaques
 
   // Cores de UI
   static const Color successGreen = Color(0xFF4CAF50);
@@ -24,14 +30,11 @@ class AppTheme {
   static const Color warningOrange = Color(0xFFFF9800);
   static const Color infoBlue = Color(0xFF2196F3);
 
-  // Slogan
-  static const String subtitle = 'Não vá sozinha, vá com as outras!';
-
   // Nome do app
   static const String appName = 'Maria Vai';
   static const String appName2 = 'Com As Outras';
 
-  static const String slogan = 'Reformas para Mulheres';
+  static const String slogan = 'Login';
 
   static ThemeData get lightTheme {
     return ThemeData(
@@ -74,9 +77,7 @@ class AppTheme {
           backgroundColor: primaryBlack,
           foregroundColor: primaryWhite,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           elevation: 2,
         ),
       ),
@@ -87,9 +88,7 @@ class AppTheme {
           foregroundColor: primaryBlack,
           side: const BorderSide(color: primaryBlack, width: 2),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
 
@@ -125,14 +124,14 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: errorRed, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
       ),
 
       // Icon theme
-      iconTheme: const IconThemeData(
-        color: primaryBlack,
-        size: 24,
-      ),
+      iconTheme: const IconThemeData(color: primaryBlack, size: 24),
 
       // Text theme
       textTheme: const TextTheme(
@@ -181,18 +180,9 @@ class AppTheme {
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
-        bodyLarge: TextStyle(
-          color: primaryBlack,
-          fontSize: 16,
-        ),
-        bodyMedium: TextStyle(
-          color: primaryBlack,
-          fontSize: 14,
-        ),
-        bodySmall: TextStyle(
-          color: primaryBlack,
-          fontSize: 12,
-        ),
+        bodyLarge: TextStyle(color: primaryBlack, fontSize: 16),
+        bodyMedium: TextStyle(color: primaryBlack, fontSize: 14),
+        bodySmall: TextStyle(color: primaryBlack, fontSize: 12),
         labelLarge: TextStyle(
           color: primaryBlack,
           fontSize: 14,
