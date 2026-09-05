@@ -28,11 +28,20 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? AppTheme.primaryBlack
+            : AppTheme.primaryPink,
+        foregroundColor: Theme.of(context).brightness == Brightness.dark
+            ? AppTheme.primaryPink
+            : AppTheme.primaryBlack,
         actions: [
           IconButton(
-            icon: const Icon(Icons.crisis_alert),
+            icon: Icon(
+              Icons.crisis_alert,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? AppTheme.primaryWhite
+                  : const Color(0xFF1A1A1A),
+            ),
             onPressed: () => context.push('/panic'),
             tooltip: 'Botão de Pânico',
           ),
@@ -131,7 +140,7 @@ class ClientServicesPage extends StatelessWidget {
               children: [
                 _ServiceCategoryCard(
                   icon: Icons.plumbing,
-                  title: 'Encanamento',
+                  title: 'Hidráulica',
                   color: Colors.blue,
                   isMobile: isMobile,
                 ),
@@ -143,19 +152,19 @@ class ClientServicesPage extends StatelessWidget {
                 ),
                 _ServiceCategoryCard(
                   icon: Icons.construction,
-                  title: 'Alvenaria',
+                  title: 'Projetos e consultorias',
                   color: Colors.brown,
                   isMobile: isMobile,
                 ),
                 _ServiceCategoryCard(
                   icon: Icons.layers,
-                  title: 'Pisos',
+                  title: 'Revestimento',
                   color: Colors.grey,
                   isMobile: isMobile,
                 ),
                 _ServiceCategoryCard(
-                  icon: Icons.bathroom,
-                  title: 'Banheiro',
+                  icon: Icons.cleaning_services,
+                  title: 'Organização e limpeza',
                   color: Colors.teal,
                   isMobile: isMobile,
                 ),

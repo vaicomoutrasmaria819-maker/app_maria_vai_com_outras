@@ -8,12 +8,16 @@ class RatingsPage extends StatefulWidget {
   final String? providerId;
   final String? providerName;
   final bool isAdminView;
+  final bool isClientView; // Se true, mostra avaliações do próprio cliente
+  final String? clientId; // ID do cliente para suas próprias avaliações
 
   const RatingsPage({
     super.key,
     this.providerId,
     this.providerName,
     this.isAdminView = false,
+    this.isClientView = false,
+    this.clientId,
   });
 
   @override
@@ -21,8 +25,8 @@ class RatingsPage extends StatefulWidget {
 }
 
 class _RatingsPageState extends State<RatingsPage> {
-  // Mock data for ratings
-  final List<Rating> _ratings = [
+  // Mock data for provider ratings (avaliações que clientes deram ao prestador)
+  final List<Rating> _providerRatings = [
     Rating(
       id: '1',
       serviceId: 'service_1',
@@ -78,6 +82,44 @@ class _RatingsPageState extends State<RatingsPage> {
     ),
   ];
 
+  // Mock data for client ratings (avaliações que o cliente deu aos serviços)
+  final List<Rating> _clientRatings = [
+    Rating(
+      id: '5',
+      serviceId: 'service_5',
+      clientId: 'client_1',
+      clientName: 'Maria Silva',
+      providerId: 'provider_2',
+      providerName: 'Beatriz Santos',
+      rating: 4.0,
+      comment: 'Pintura ficou muito bonita, no prazo combinado.',
+      categories: ['Qualidade', 'Pontualidade'],
+      createdAt: DateTime.now().subtract(const Duration(days: 3)),
+      status: RatingStatus.completed,
+    ),
+    Rating(
+      id: '6',
+      serviceId: 'service_6',
+      clientId: 'client_1',
+      clientName: 'Maria Silva',
+      providerId: 'provider_3',
+      providerName: 'Cláudia Rodrigues',
+      rating: 5.0,
+      comment: 'Excelente serviço de limpeza pós-obra!',
+      categories: ['Profissionalismo', 'Qualidade'],
+      createdAt: DateTime.now().subtract(const Duration(days: 7)),
+      status: RatingStatus.completed,
+    ),
+  ];
+
+  List<Rating> get _ratings {
+    if (widget.isClientView) {
+      return _clientRatings;
+    } else {
+      return _providerRatings;
+    }
+  }
+
   double get _averageRating {
     if (_ratings.isEmpty) return 0.0;
     final sum = _ratings.fold<double>(
@@ -107,7 +149,7 @@ class _RatingsPageState extends State<RatingsPage> {
       backgroundColor: const Color(0xFFF0BFC5),
       appBar: AppBar(
         title: Text(
-          widget.isAdminView ? 'Avaliações do Sistema' : 'Minhas Avaliações',
+          widget.isAdminView ? 'Avaliações do Sistema' : 'Avaliações',
           style: TextStyle(fontSize: isMobile ? 18 : 20),
         ),
         backgroundColor: Colors.white,

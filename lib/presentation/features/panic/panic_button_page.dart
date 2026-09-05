@@ -263,22 +263,43 @@ class _PanicButtonPageState extends State<PanicButtonPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment
+                              .center, // Centraliza os blocos no Card
                           children: [
                             const Icon(Icons.info_outline, color: Colors.blue),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 12),
                             Text(
                               'Ao acionar o botão:',
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            const Text('• Seu local será compartilhado'),
-                            const Text(
-                              '• Contatos de emergência serão avisados',
-                            ),
-                            const Text(
-                              '• Serviços de emergência serão chamados',
+                            const SizedBox(height: 12),
+
+                            // O IntrinsicWidth faz o bloco ter o tamanho exato do maior texto interno
+                            IntrinsicWidth(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start, // Alinha as bolinhas perfeitamente à esquerda do bloco
+                                children: [
+                                  Text(
+                                    '• Seu local será compartilhado',
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                  const SizedBox(
+                                    height: 4,
+                                  ), // Pequeno espaço opcional entre as linhas
+                                  Text(
+                                    '• Contatos de emergência serão avisados',
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '• Serviços de emergência serão chamados',
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
